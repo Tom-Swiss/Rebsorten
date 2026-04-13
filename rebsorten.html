@@ -21,316 +21,75 @@
     --border-strong: rgba(26,20,16,0.22);
     --radius: 4px;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--cream); color: var(--ink); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; }
 
-  body {
-    background: var(--cream);
-    color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    min-height: 100vh;
-  }
+  header { background: var(--ink); color: var(--cream); padding: 2.5rem 1.5rem 2rem; text-align: center; position: relative; overflow: hidden; }
+  header::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(255,255,255,0.015) 20px, rgba(255,255,255,0.015) 21px); }
+  .header-eyebrow { font-size: 10px; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent-gold); margin-bottom: 0.75rem; }
+  header h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 6vw, 3.5rem); font-weight: 300; letter-spacing: 0.02em; line-height: 1.1; color: var(--cream); }
+  header h1 em { font-style: italic; color: rgba(245,240,232,0.65); }
+  .header-sub { margin-top: 0.75rem; font-size: 12px; color: rgba(245,240,232,0.45); letter-spacing: 0.08em; }
 
-  /* HEADER */
-  header {
-    background: var(--ink);
-    color: var(--cream);
-    padding: 2.5rem 1.5rem 2rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 20px,
-      rgba(255,255,255,0.015) 20px,
-      rgba(255,255,255,0.015) 21px
-    );
-  }
-  .header-eyebrow {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--accent-gold);
-    margin-bottom: 0.75rem;
-  }
-  header h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.2rem, 6vw, 3.5rem);
-    font-weight: 300;
-    letter-spacing: 0.02em;
-    line-height: 1.1;
-    color: var(--cream);
-  }
-  header h1 em {
-    font-style: italic;
-    color: rgba(245,240,232,0.65);
-  }
-  .header-sub {
-    margin-top: 0.75rem;
-    font-size: 12px;
-    color: rgba(245,240,232,0.45);
-    letter-spacing: 0.08em;
-  }
-
-  /* TABS */
-  .tab-container {
-    display: flex;
-    gap: 0;
-    background: var(--ink);
-    padding: 0 1.5rem;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-  .tab-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 1rem 1.5rem;
-    background: transparent;
-    border: none;
-    color: rgba(245,240,232,0.4);
-    cursor: pointer;
-    position: relative;
-    transition: color 0.2s;
-  }
-  .tab-btn::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: transparent;
-    transition: background 0.2s;
-  }
+  .tab-container { display: flex; background: var(--ink); padding: 0 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .tab-btn { font-size: 11px; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; padding: 1rem 1.5rem; background: transparent; border: none; color: rgba(245,240,232,0.4); cursor: pointer; position: relative; transition: color 0.2s; }
+  .tab-btn::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background 0.2s; }
   .tab-btn.active { color: var(--cream); }
   .tab-btn.active-white::after { background: var(--white-wine); }
   .tab-btn.active-red::after { background: var(--red-wine); }
 
-  /* MAIN */
-  main { padding: 0; }
-
-  /* SEARCH */
-  .search-bar {
-    padding: 1rem 1.5rem;
-    background: var(--parchment);
-    border-bottom: 1px solid var(--border);
-  }
-  .search-input {
-    width: 100%;
-    background: var(--cream);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius);
-    padding: 0.6rem 1rem 0.6rem 2.2rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 300;
-    color: var(--ink);
-    outline: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239B9188' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: 0.7rem center;
-  }
+  .search-bar { padding: 1rem 1.5rem; background: var(--parchment); border-bottom: 1px solid var(--border); }
+  .search-input { width: 100%; background: var(--cream); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 0.6rem 1rem 0.6rem 2.2rem; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: var(--ink); outline: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239B9188' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 0.7rem center; }
   .search-input::placeholder { color: var(--ink-faint); }
   .search-input:focus { border-color: var(--ink-muted); }
 
-  /* CARD GRID */
-  .card-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-  @media (min-width: 768px) {
-    .card-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (min-width: 1200px) {
-    .card-grid { grid-template-columns: repeat(3, 1fr); }
-  }
+  .card-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+  @media (min-width: 768px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1200px) { .card-grid { grid-template-columns: repeat(3, 1fr); } }
 
-  /* WINE CARD */
-  .wine-card {
-    background: var(--cream);
-    border-right: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 1.5rem;
-    transition: background 0.15s;
-    cursor: pointer;
-    position: relative;
-  }
+  .wine-card { background: var(--cream); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1.5rem; transition: background 0.15s; position: relative; }
   .wine-card:hover { background: #F0EAE0; }
-
-  .card-accent {
-    width: 3px;
-    height: 2rem;
-    border-radius: 2px;
-    position: absolute;
-    left: 0; top: 1.5rem;
-  }
+  .card-accent { width: 3px; height: 2rem; border-radius: 2px; position: absolute; left: 0; top: 1.5rem; }
   .accent-white { background: var(--white-wine); }
   .accent-red { background: var(--red-wine); }
 
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.75rem;
-    gap: 0.5rem;
-  }
-  .sorte-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.35rem;
-    font-weight: 500;
-    line-height: 1.2;
-    color: var(--ink);
-  }
-  .alias-tag {
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    color: var(--ink-faint);
-    font-style: italic;
-    margin-top: 2px;
-  }
-  .heimat-badge {
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 2px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem; gap: 0.5rem; }
+  .sorte-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 500; line-height: 1.2; color: var(--ink); }
+  .alias-tag { font-size: 10px; color: var(--ink-faint); font-style: italic; margin-top: 2px; }
+  .heimat-badge { font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; white-space: nowrap; flex-shrink: 0; }
   .badge-white-wine { background: var(--white-wine-light); color: var(--white-wine); }
   .badge-red-wine { background: var(--red-wine-light); color: var(--red-wine); }
 
-  /* STRUCTURE PILLS */
-  .structure-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-bottom: 0.75rem;
-  }
-  .pill {
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: 20px;
-    border: 1px solid;
-  }
+  .structure-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0.75rem; }
+  .pill { font-size: 9px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; border: 1px solid; }
   .pill-w { border-color: var(--white-wine); color: var(--white-wine); }
   .pill-r { border-color: var(--red-wine); color: var(--red-wine); }
   .pill-a { border-color: var(--accent-gold); color: var(--accent-gold); }
 
-  /* SECTIONS */
-  .card-section {
-    margin-bottom: 0.75rem;
-  }
-  .section-label {
-    font-size: 8px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-bottom: 0.25rem;
-    display: block;
-  }
-  .section-text {
-    font-size: 12px;
-    font-weight: 300;
-    line-height: 1.55;
-    color: var(--ink-muted);
-  }
+  .card-section { margin-bottom: 0.75rem; }
+  .section-label { font-size: 8px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.3rem; display: block; }
+  .section-text { font-size: 12px; font-weight: 300; line-height: 1.55; color: var(--ink-muted); }
 
-  /* WEINE LIST */
-  .weine-list {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  .wein-item {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-  }
-  .wein-dot {
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    margin-top: 5px;
-  }
+  .synonyme-list { display: flex; flex-direction: column; gap: 4px; }
+  .synonym-row { display: flex; gap: 8px; align-items: baseline; }
+  .synonym-region { font-size: 10px; color: var(--ink-faint); font-weight: 400; min-width: 95px; flex-shrink: 0; line-height: 1.4; }
+  .synonym-name { font-family: 'Cormorant Garamond', serif; font-size: 12px; font-style: italic; color: var(--ink-muted); line-height: 1.4; }
+
+  .weine-list { display: flex; flex-direction: column; gap: 5px; }
+  .wein-item { display: flex; align-items: baseline; gap: 6px; }
+  .wein-dot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
   .dot-w { background: var(--white-wine); }
   .dot-r { background: var(--red-wine); }
-  .wein-info {}
-  .wein-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 13px;
-    font-weight: 500;
-    font-style: italic;
-    color: var(--ink);
-    display: block;
-    line-height: 1.3;
-  }
-  .wein-detail {
-    font-size: 10px;
-    font-weight: 300;
-    color: var(--ink-faint);
-    line-height: 1.3;
-  }
+  .wein-name { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 500; font-style: italic; color: var(--ink); display: block; line-height: 1.3; }
+  .wein-detail { font-size: 10px; font-weight: 300; color: var(--ink-faint); line-height: 1.3; }
 
-  /* PAIRING */
-  .pairing-text {
-    font-size: 12px;
-    color: var(--ink-muted);
-    font-weight: 300;
-  }
+  .pairing-text { font-size: 12px; color: var(--ink-muted); font-weight: 300; }
+  .card-divider { border: none; border-top: 1px solid var(--border); margin: 0.75rem 0; }
 
-  /* DIVIDER */
-  .card-divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 0.75rem 0;
-  }
-
-  /* EMPTY STATE */
-  .empty-state {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--ink-faint);
-  }
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--ink-faint); }
   .empty-state p { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic; }
-
-  /* FOOTER */
-  footer {
-    background: var(--parchment);
-    border-top: 1px solid var(--border);
-    padding: 1.25rem 1.5rem;
-    text-align: center;
-    font-size: 10px;
-    color: var(--ink-faint);
-    letter-spacing: 0.1em;
-  }
-
-  /* COUNT */
-  .count-bar {
-    padding: 0.5rem 1.5rem;
-    background: var(--parchment);
-    border-bottom: 1px solid var(--border);
-    font-size: 11px;
-    color: var(--ink-faint);
-  }
-
+  footer { background: var(--parchment); border-top: 1px solid var(--border); padding: 1.25rem 1.5rem; text-align: center; font-size: 10px; color: var(--ink-faint); letter-spacing: 0.1em; }
+  .count-bar { padding: 0.5rem 1.5rem; background: var(--parchment); border-bottom: 1px solid var(--border); font-size: 11px; color: var(--ink-faint); }
   .hidden { display: none !important; }
 </style>
 </head>
@@ -339,7 +98,7 @@
 <header>
   <div class="header-eyebrow">Persönliche Weinreferenz</div>
   <h1>Rebsorten<br><em>Übersicht</em></h1>
-  <div class="header-sub">10 Weiss · 12 Rot · Aromen · Struktur · Klassiker</div>
+  <div class="header-sub">10 Weiss · 12 Rot · Synonyme · Klassiker</div>
 </header>
 
 <div class="tab-container">
@@ -348,7 +107,7 @@
 </div>
 
 <div class="search-bar">
-  <input type="search" class="search-input" placeholder="Sorte, Aroma, Wein suchen…" oninput="filterCards(this.value)" id="searchInput">
+  <input type="search" class="search-input" placeholder="Sorte, Synonym, Aroma, Wein suchen…" oninput="filterCards(this.value)" id="searchInput">
 </div>
 
 <div class="count-bar" id="countBar">10 Sorten</div>
@@ -358,336 +117,518 @@
   <div class="empty-state hidden" id="emptyState"><p>Keine Ergebnisse gefunden.</p></div>
 </main>
 
-<footer>Académie du Vin · Persönliche Weinreferenz · 2026</footer>
+<footer>Tom's Wein-Coach · 2026</footer>
 
 <script>
 const data = {
   weiss: [
     {
-      name: "Chardonnay",
-      alias: "Burgunder",
-      heimat: "Burgund, FR",
-      aromen: "Apfel, Birne, Butter, Haselnuss, Vanille (Barrique), Brioche",
+      name: "Chardonnay", alias: "Weissburgunder (selten, DE)", heimat: "Burgund, FR",
+      synonyme: [
+        { region: "Champagne (FR)", name: "Chardonnay – Hauptsorte Blanc de Blancs" },
+        { region: "Burgund (FR)", name: "Beaulieu, Aubaine (historisch)" },
+        { region: "Schweiz / Deutschland", name: "Weisser Burgunder (selten)" }
+      ],
+      aromen: "Apfel, Birne, Butter, Haselnuss, Vanille (Barrique), Brioche, Zitrus (Chablis)",
       struktur: ["mittel-hoher Körper","gemässigte Säure"],
-      regionen: "Burgund, Chablis, Champagne, Californien, Australien",
-      pairing: "Poulet, Fisch, Pasta, Pilze",
+      regionen: "Burgund, Chablis, Champagne, Californien, Australien, Chile, Neuseeland",
+      pairing: "Poulet, Fisch, Hummer, Pasta, Pilze",
       weine: [
-        { name:"Montrachet / Puligny-Montrachet", detail:"Burgund – Weltklasse" },
-        { name:"Chablis Premier / Grand Cru", detail:"Burgund – mineralisch, kein Holz" },
-        { name:"Meursault", detail:"Burgund – butterig, reichhaltig" },
-        { name:"Kistler, Leeuwin Estate", detail:"Neue Welt – Referenzproduzenten" }
+        { name:"Montrachet Grand Cru", detail:"Burgund – absoluter Weltgipfel" },
+        { name:"Puligny-Montrachet 1er Cru (Leflaive)", detail:"Burgund – mineralisch, elegant" },
+        { name:"Chevalier-Montrachet (Bouchard)", detail:"Burgund – präzise, langlebig" },
+        { name:"Meursault (Coche-Dury)", detail:"Burgund – butterig, Ikone" },
+        { name:"Chablis Grand Cru «Les Clos»", detail:"Kein Holz, Kalkstein pur" },
+        { name:"Corton-Charlemagne Grand Cru", detail:"Burgund – mächtig, tanninreich" },
+        { name:"Kistler «Vine Hill» (Sonoma)", detail:"Californien – Neue Welt Referenz" },
+        { name:"Leeuwin Estate «Art Series»", detail:"Margaret River, AU – Weltklasse" },
+        { name:"Kumeu River «Mate's Vineyard»", detail:"Auckland, NZ – europäischer Stil" },
+        { name:"Kongsgaard (Napa Valley)", detail:"Unfiltriert, komplex, langlebig" }
       ]
     },
     {
-      name: "Sauvignon Blanc",
-      alias: null,
-      heimat: "Loire, FR",
-      aromen: "Stachelbeere, Grapefruit, Gras, Kräuter, Passionsfrucht",
+      name: "Sauvignon Blanc", alias: null, heimat: "Loire, FR",
+      synonyme: [
+        { region: "Norditalien", name: "Sauvignon (Alto Adige, Friuli)" },
+        { region: "Österreich", name: "Sauvignon Blanc (Steiermark – eigener Stil)" },
+        { region: "Neuseeland", name: "Sauvignon Blanc (Marlborough-Stil, weltweit bekannt)" },
+        { region: "Bordeaux (FR)", name: "Bestandteil weisser Bordeaux-Cuvées" }
+      ],
+      aromen: "Stachelbeere, Grapefruit, Gras, grüne Paprika, Kräuter, Passionsfrucht",
       struktur: ["leicht-mittel","hohe Säure"],
-      regionen: "Sancerre, Pouilly-Fumé, Neuseeland, Steiermark",
-      pairing: "Ziegenkäse, Salate, Spargel, Meeresfrüchte",
+      regionen: "Sancerre, Pouilly-Fumé, Bordeaux, Neuseeland, Steiermark, Chile",
+      pairing: "Ziegenkäse, Salate, Spargel, Austern, Meeresfrüchte",
       weine: [
-        { name:"Sancerre AOC", detail:"Loire – Klassiker, Ziegenkäse" },
-        { name:"Pouilly-Fumé AOC", detail:"Loire – rauchig, komplex" },
-        { name:"Cloudy Bay", detail:"Marlborough, NZ – Ikone" },
-        { name:"Château Haut-Brion Blanc", detail:"Bordeaux – teuerster Sauvignon" }
+        { name:"Sancerre (Henri Bourgeois)", detail:"Loire – Ziegenkäse-Klassiker" },
+        { name:"Pouilly-Fumé «Baron L» (de Ladoucette)", detail:"Loire – rauchig, komplex" },
+        { name:"Didier Dagueneau «Silex»", detail:"Pouilly-Fumé – biodynamisch, Ikone" },
+        { name:"Cloudy Bay", detail:"Marlborough, NZ – Welthit" },
+        { name:"Dog Point Vineyard", detail:"Marlborough – mineralisch, tiefer" },
+        { name:"Greywacke (Kevin Judd)", detail:"Marlborough – ex-Cloudy Bay" },
+        { name:"Château Haut-Brion Blanc", detail:"Pessac-Léognan – teuerster Sauvignon" },
+        { name:"Domaine Vacheron Sancerre", detail:"Loire – biodynamisch" },
+        { name:"Tement «Zieregg»", detail:"Steiermark – österreichische Spitze" }
       ]
     },
     {
-      name: "Riesling",
-      alias: null,
-      heimat: "Deutschland",
-      aromen: "Limette, Aprikose, Pfirsich, Kerosin (gereift), Schiefer",
-      struktur: ["leicht","sehr hohe Säure","trocken bis süss"],
-      regionen: "Mosel, Elsass, Pfalz, Rheingau, Clare Valley",
-      pairing: "Asiatisch, Fisch, Weichkäse",
+      name: "Riesling", alias: null, heimat: "Rhein, Deutschland",
+      synonyme: [
+        { region: "Elsass (FR)", name: "Riesling d'Alsace" },
+        { region: "Österreich", name: "Rheinriesling (zur Unterscheidung von Welschriesling)" },
+        { region: "Australien", name: "Rhine Riesling (historisch)" },
+        { region: "Achtung!", name: "Welschriesling = völlig andere Sorte" }
+      ],
+      aromen: "Limette, Aprikose, Pfirsich, Kerosin/Petrol (gereift), Schiefer, Honig (Edelsüss)",
+      struktur: ["leicht","sehr hohe Säure","trocken bis edelsüss"],
+      regionen: "Mosel, Rheingau, Pfalz, Nahe, Elsass, Clare Valley (AU), Eden Valley (AU)",
+      pairing: "Asiatisch, Sushi, Fisch, Weichkäse, Foie Gras (süss)",
       weine: [
-        { name:"Mosel Spätlese / Auslese", detail:"Mosel – filigran, süsslich" },
-        { name:"Riesling Grand Cru Alsace", detail:"Schoenenbourg, Rangen etc." },
-        { name:"Egon Müller Scharzhofberger", detail:"Mosel – teuerster Riesling" },
-        { name:"Trimbach Clos Ste-Hune", detail:"Elsass – trocken, langlebig" }
+        { name:"Egon Müller Scharzhofberger TBA", detail:"Saar – teuerster Riesling der Welt" },
+        { name:"JJ Prüm Wehlener Sonnenuhr Spätlese", detail:"Mosel – Paradebeispiel" },
+        { name:"Trimbach Clos Ste-Hune", detail:"Elsass – trocken, jahrzehntelang reifbar" },
+        { name:"Dönnhoff Oberhäuser Brücke Auslese", detail:"Nahe – filigran, Weltklasse" },
+        { name:"Georg Breuer «Berg Schlossberg»", detail:"Rheingau – trocken, mineralisch" },
+        { name:"Knoll Loibenberg Smaragd", detail:"Wachau – österreichischer Riesling" },
+        { name:"Grosset «Polish Hill»", detail:"Clare Valley, AU – trocken, zitrusfrisch" },
+        { name:"Zind-Humbrecht Rangen Grand Cru", detail:"Elsass – vulkanischer Boden" }
       ]
     },
     {
-      name: "Pinot Gris",
-      alias: "Pinot Grigio (IT)",
-      heimat: "Burgund, FR",
-      aromen: "Birne, Honig, Mandel, Muskat (Elsass); neutral, Zitrus (IT)",
+      name: "Pinot Gris", alias: "Pinot Grigio (IT), Grauburgunder (DE/AT)", heimat: "Burgund, FR",
+      synonyme: [
+        { region: "Deutschland / Österreich", name: "Grauburgunder; Ruländer (süss, AT)" },
+        { region: "Italien", name: "Pinot Grigio (leichterer Stil)" },
+        { region: "Elsass (FR)", name: "Pinot Gris (reichhaltiger Stil)" },
+        { region: "Ungarn", name: "Szürkebarát («Grauer Mönch»)" }
+      ],
+      aromen: "Birne, Honig, Mandel, Muskat (Elsass); neutral, Zitrus, Mandel (IT)",
       struktur: ["mittel-voll","geringe Säure"],
-      regionen: "Elsass, Friuli, Alto Adige, Oregon",
-      pairing: "Geflügel, Weichkäse, Pasta",
+      regionen: "Elsass, Friuli, Alto Adige, Oregon, Neuseeland",
+      pairing: "Geflügel, Weichkäse, Pasta, Risotto, Fisch",
       weine: [
-        { name:"Pinot Gris Grand Cru Alsace", detail:"Elsass – reichhaltig, komplex" },
-        { name:"Santa Margherita Pinot Grigio", detail:"Alto Adige – Weltbekanntheit" },
-        { name:"King Estate", detail:"Oregon – neue Referenz" }
+        { name:"Pinot Gris Grand Cru «Rangen» (Zind-Humbrecht)", detail:"Elsass – vulkanisch, mächtig" },
+        { name:"Vendange Tardive Pinot Gris (Hugel)", detail:"Elsass – süsslich, komplex" },
+        { name:"Jermann «Were Dreams»", detail:"Friuli – vielschichtig, modern" },
+        { name:"Santa Margherita Pinot Grigio", detail:"Alto Adige – weltweit bekannt" },
+        { name:"Livio Felluga Pinot Grigio", detail:"Friuli – Referenzproduzent" },
+        { name:"King Estate Pinot Gris", detail:"Oregon – Neue Welt Referenz" },
+        { name:"Eyrie Vineyards", detail:"Oregon – Pionier" }
       ]
     },
     {
-      name: "Gewürztraminer",
-      alias: null,
-      heimat: "Südtirol / Elsass",
-      aromen: "Rosenblüte, Litschi, Ingwer, Zimt, Orangenschale",
-      struktur: ["vollmundig","niedrige Säure","hoher Alkohol"],
-      regionen: "Elsass, Südtirol, Neuseeland",
-      pairing: "Asiatisch, Foie Gras, Blauschimmelkäse",
+      name: "Gewürztraminer", alias: null, heimat: "Tramin / Südtirol, IT",
+      synonyme: [
+        { region: "Südtirol (IT)", name: "Traminer Aromatico" },
+        { region: "Elsass (FR)", name: "Gewurztraminer (ohne Umlaut)" },
+        { region: "Deutschland", name: "Roter Traminer, Clevner" },
+        { region: "Österreich", name: "Traminer, Roter Traminer" },
+        { region: "Osteuropa", name: "Traminec (Slowenien), Tramini (Ungarn)" }
+      ],
+      aromen: "Rosenblüte, Litschi, Ingwer, Zimt, Orangenschale, Moschus, Mango",
+      struktur: ["vollmundig","niedrige Säure","hoher Alkohol","leicht ölige Textur"],
+      regionen: "Elsass, Südtirol, Pfalz (DE), Neuseeland",
+      pairing: "Asiatisch (Thai, Indisch), Foie Gras, Blauschimmelkäse, Munster",
       weine: [
-        { name:"Gewurztraminer Grand Cru Alsace", detail:"Zind-Humbrecht, Hugel etc." },
-        { name:"Vendange Tardive / SGN", detail:"Elsass – süss, konzentriert" },
-        { name:"Terminum (Elena Walch)", detail:"Südtirol – elegant" }
+        { name:"Gewurztraminer Grand Cru «Goldert» (Zind-Humbrecht)", detail:"Elsass – Benchmark" },
+        { name:"Gewurztraminer «Jubilee» (Hugel)", detail:"Elsass – klassischer Stil" },
+        { name:"Vendange Tardive Gewurztraminer (Trimbach)", detail:"Elsass – süsslich, langlebig" },
+        { name:"Cantina Tramin «Nussbaumer»", detail:"Südtirol – bester Traminer Italiens" },
+        { name:"Terminum (Elena Walch)", detail:"Südtirol – elegant, präzise" },
+        { name:"Dönnhoff Traminer (Nahe)", detail:"Deutschland – delikat" },
+        { name:"Lawson's Dry Hills", detail:"Marlborough, NZ – zugänglich" }
       ]
     },
     {
-      name: "Viognier",
-      alias: null,
-      heimat: "Rhône, FR",
-      aromen: "Pfirsich, Aprikose, Veilchen, Jasmin, Orangenblüte",
-      struktur: ["vollmundig","niedrige Säure"],
-      regionen: "Condrieu, Côtes du Rhône, Australien",
-      pairing: "Poulet, Hummer, Currys (mild)",
+      name: "Viognier", alias: null, heimat: "Nördliche Rhône, FR",
+      synonyme: [
+        { region: "Côte-Rôtie (FR)", name: "Bis 20% mit Syrah co-fermentiert" },
+        { region: "Norditalien", name: "Viognier (vereinzelt Toskana, Piemont)" },
+        { region: "Australien", name: "Viognier (Barossa, Eden Valley)" }
+      ],
+      aromen: "Weisser Pfirsich, Aprikose, Veilchen, Jasmin, Orangenblüte, Mandarine",
+      struktur: ["vollmundig","niedrige Säure","leicht ölige Textur"],
+      regionen: "Condrieu AOC, Château-Grillet AOC, Languedoc, Barossa (AU), Virginien (USA)",
+      pairing: "Hummer, Poulet mit Sahne, mild-würzige Currys, Foie Gras",
       weine: [
-        { name:"Condrieu AOC", detail:"Nördl. Rhône – das Original" },
-        { name:"Château-Grillet AOC", detail:"Kleinste AOC Frankreichs" },
-        { name:"Yalumba «The Virgilius»", detail:"Australien – Referenz Neue Welt" }
+        { name:"Condrieu «La Doriane» (Guigal)", detail:"Nördl. Rhône – elegantester Stil" },
+        { name:"Château-Grillet AOC (Pinault)", detail:"Kleinste eigene AOC Frankreichs" },
+        { name:"Condrieu (Georges Vernay)", detail:"Nördl. Rhône – Pionier der Appellation" },
+        { name:"Yalumba «The Virgilius»", detail:"Eden Valley, AU – Neue Welt Referenz" },
+        { name:"E. Guigal Côte-Rôtie (mit Viognier)", detail:"Co-Fermentation – Röstaromen" },
+        { name:"Tablas Creek Viognier", detail:"Paso Robles, CA – biodynamisch" }
       ]
     },
     {
-      name: "Grüner Veltliner",
-      alias: null,
-      heimat: "Österreich",
-      aromen: "Weisser Pfeffer, Kräuter, Grapefruit, grüner Apfel",
-      struktur: ["leicht-mittel","lebendige Säure"],
-      regionen: "Wachau, Kamptal, Kremstal",
-      pairing: "Wiener Schnitzel, Spargel, Sushi",
+      name: "Grüner Veltliner", alias: "GrüVe (Kurzform)", heimat: "Österreich",
+      synonyme: [
+        { region: "Österreich (regional)", name: "Weissgipfler, Grüner, Veltliner" },
+        { region: "Tschechien", name: "Veltlínské zelené" },
+        { region: "Slowakei", name: "Veltlínske zelené" },
+        { region: "Achtung!", name: "Roter Veltliner = völlig andere Sorte" }
+      ],
+      aromen: "Weisser Pfeffer (typisch!), Kräuter, Grapefruit, grüner Apfel, Tabak (gereift)",
+      struktur: ["leicht bis vollmundig (je nach Lage)","lebendige Säure"],
+      regionen: "Wachau, Kamptal, Kremstal, Traisental, Wien",
+      pairing: "Wiener Schnitzel, Spargel, Sushi, Fisch, Gemüse",
       weine: [
-        { name:"Smaragd (Wachau)", detail:"Höchste Wachau-Kategorie" },
-        { name:"Knoll, Prager, F.X. Pichler", detail:"Wachau – Top-Produzenten" },
-        { name:"Schloss Gobelsburg", detail:"Kamptal – exzellent, lagerfähig" }
+        { name:"F.X. Pichler «Unendlich» Smaragd", detail:"Wachau – Legende, sehr langlebig" },
+        { name:"Knoll Loibenberg Smaragd", detail:"Wachau – strukturiert, mineralisch" },
+        { name:"Prager «Achleiten» Smaragd", detail:"Wachau – Terroir pur" },
+        { name:"Hirsch Heiligenstein Kamptal DAC Reserve", detail:"Kamptal – Vulkangestein" },
+        { name:"Bründlmayer Lamm Kamptal DAC", detail:"Kamptal – Referenz, Weltklasse" },
+        { name:"Schloss Gobelsburg GV Reserve", detail:"Kamptal – elegant, zugänglich" },
+        { name:"Nigl Privat Grüner Veltliner", detail:"Kremstal – frisch, präzise" },
+        { name:"Loimer «Steinmassl»", detail:"Kamptal – biodynamisch, mineralisch" }
       ]
     },
     {
-      name: "Chasselas",
-      alias: "Fendant (VS)",
-      heimat: "Schweiz",
-      aromen: "Sehr neutral, florale Noten, Mineralität, leichtes Steinobst",
-      struktur: ["leicht","niedrige Säure"],
-      regionen: "Waadt, Wallis, Bielersee, Genfersee",
-      pairing: "Fondue, Raclette, Apéro",
+      name: "Chasselas", alias: "Fendant (VS), Gutedel (DE)", heimat: "Schweiz / Savoyen, FR",
+      synonyme: [
+        { region: "Wallis (CH)", name: "Fendant" },
+        { region: "Deutschland (Baden)", name: "Gutedel" },
+        { region: "Savoyen (FR)", name: "Chasselas (Crépy AOC)" },
+        { region: "Elsass (FR)", name: "Chasselas (selten angebaut)" }
+      ],
+      aromen: "Sehr neutral, florale Noten, Mineralität, leichtes Steinobst, Feuerstein",
+      struktur: ["leicht","niedrige Säure","dezent"],
+      regionen: "Waadt (Dézaley, Féchy, La Côte), Wallis, Bielersee, Neuenburg, Baden (DE)",
+      pairing: "Fondue, Raclette, Apéro, Quiche, Fischfilet",
       weine: [
-        { name:"Dézaley Grand Cru AOC", detail:"Waadt – Schweizer Spitze" },
-        { name:"Fendant du Valais AOC", detail:"Wallis – Fondue-Klassiker" },
-        { name:"Château d'Auvernier", detail:"Neuenburg – eleganter Stil" },
-        { name:"Louis Bovard (Dézaley)", detail:"Waadt – Referenzproduzent" }
+        { name:"Dézaley Grand Cru (Louis Bovard)", detail:"Waadt – Schweizer Spitze" },
+        { name:"Dézaley «Chemin de Fer» (Luc Massy)", detail:"Waadt – mineralisch, lagerfähig" },
+        { name:"Fendant du Valais (Cave des Chevaliers)", detail:"Wallis – der Klassiker" },
+        { name:"Château d'Auvernier", detail:"Neuenburg – eleganter, moderner Stil" },
+        { name:"Domaine la Colombe (Féchy)", detail:"Waadt – frisch, floral" },
+        { name:"Markgräfler Gutedel (Blankenhorn)", detail:"Baden, DE – leicht, trocken" }
       ]
     },
     {
-      name: "Muscat",
-      alias: "Muskateller",
-      heimat: "Griechisch (uralt)",
-      aromen: "Traubenaroma, Rosenblüte, Pfirsich, Honig",
-      struktur: ["leicht-mittel","oft süss"],
-      regionen: "Alsace, Asti (IT), Rutherglen (AU)",
-      pairing: "Dessert, Apéro trocken, frische Frucht",
+      name: "Muscat", alias: "Muskateller (DE/AT/CH)", heimat: "Griechenland (uralt)",
+      synonyme: [
+        { region: "Italien", name: "Moscato (Asti), Muscat Blanc à Petits Grains" },
+        { region: "Spanien", name: "Moscatel de Alejandría, Moscatel Morisco" },
+        { region: "Deutschland / Österreich", name: "Gelber Muskateller, Roter Muskateller" },
+        { region: "Elsass (FR)", name: "Muscat d'Alsace; Muscat Ottonel (leichtere Variante)" },
+        { region: "Australien", name: "Muscat à Petits Grains (Rutherglen)" }
+      ],
+      aromen: "Intensives Traubenaroma, Rosenblüte, Pfirsich, Orangenblüte, Honig",
+      struktur: ["leicht-mittel","oft süss bis edelsüss"],
+      regionen: "Elsass, Asti (IT), Rutherglen (AU), Samos (GR), Beaumes-de-Venise (FR)",
+      pairing: "Dessert, frische Früchte, Apéro (trocken), leichte Pasteten",
       weine: [
-        { name:"Muscat d'Alsace AOC", detail:"Elsass – trocken, aromatisch" },
-        { name:"Asti Spumante DOCG", detail:"Piemont – süsslich, perlend" },
-        { name:"Muscat de Beaumes-de-Venise", detail:"Rhône – süss, Apéro" },
-        { name:"Rutherglen Muscat", detail:"Australien – oxidativ, süss" }
+        { name:"Muscat d'Alsace (Trimbach)", detail:"Elsass – trocken, aromatisch" },
+        { name:"Asti Spumante DOCG (Fontanafredda)", detail:"Piemont – süsslich, perlend" },
+        { name:"Moscato d'Asti DOCG (Vietti)", detail:"Piemont – dezent süss, fein" },
+        { name:"Muscat de Beaumes-de-Venise (Jaboulet)", detail:"Rhône – Süsswein, Apéro" },
+        { name:"Muscat de Rivesaltes (Cazes)", detail:"Roussillon – oxidativer Stil" },
+        { name:"Rutherglen Muscat (Chambers Rosewood)", detail:"Australien – dickflüssig, süss" },
+        { name:"Samos Muscat (UOS)", detail:"Griechenland – historisch, intensiv" }
       ]
     },
     {
-      name: "Verdejo",
-      alias: null,
-      heimat: "Spanien",
-      aromen: "Kräuter, Zitrus, Grapefruit, grüne Mandel, leichter Bitterton",
-      struktur: ["leicht-mittel","hohe Säure"],
-      regionen: "Rueda DO (Spanien)",
-      pairing: "Meeresfrüchte, Tapas, leichte Salate",
+      name: "Verdejo", alias: null, heimat: "Rueda, Kastilien, ES",
+      synonyme: [
+        { region: "Spanien (lokal)", name: "Verdejo (keine weiteren Synonyme)" },
+        { region: "Achtung!", name: "Nicht verwandt mit Verdelho aus Portugal/Madeira" }
+      ],
+      aromen: "Kräuter, Zitrusschale, Grapefruit, grüne Mandel, leichter Bitterton",
+      struktur: ["leicht-mittel","hohe Säure","bitteres Finish"],
+      regionen: "Rueda DO (Kastilien-León, ES)",
+      pairing: "Meeresfrüchte, Tapas, gegrillter Fisch, leichte Salate",
       weine: [
-        { name:"Rueda DO", detail:"Kastilien – Haupt-Appellation" },
-        { name:"Belondrade y Lurton", detail:"Rueda – bester Produzent" },
-        { name:"José Pariente", detail:"Rueda – frisch, zuverlässig" }
+        { name:"Belondrade y Lurton", detail:"Rueda – bester Produzent, mit Barrique" },
+        { name:"José Pariente Verdejo", detail:"Rueda – frisch, zuverlässig" },
+        { name:"Marqués de Riscal Rueda", detail:"Bekannt, zugänglich" },
+        { name:"Naia Verdejo", detail:"Rueda – biodynamisch, mineralisch" },
+        { name:"Shaya Verdejo", detail:"Rueda – alte Reben, konzentriert" }
       ]
     }
   ],
   rot: [
     {
-      name: "Cabernet Sauvignon",
-      alias: null,
-      heimat: "Bordeaux, FR",
-      aromen: "Schwarze Johannisbeere, Zeder, Tabak, Graphit, Menthol",
-      struktur: ["vollmundig","hohe Tannine","hohe Säure"],
-      regionen: "Médoc, Napa Valley, Coonawarra, Chile, Toskana",
-      pairing: "Steak, Lammkeule, Hartkäse",
+      name: "Cabernet Sauvignon", alias: null, heimat: "Bordeaux, FR",
+      synonyme: [
+        { region: "Frankreich (regional)", name: "Petit-Cabernet, Vidure (Graves, historisch)" },
+        { region: "Italien", name: "Cabernet (Toskana, Venetien)" },
+        { region: "Kreuzung", name: "Elternteil: Cabernet Franc × Sauvignon Blanc" }
+      ],
+      aromen: "Schwarze Johannisbeere (Cassis), Zeder, Tabak, Graphit, Menthol, Pfefferkorn",
+      struktur: ["vollmundig","hohe Tannine","hohe Säure","hoher Alkohol"],
+      regionen: "Médoc (Pauillac, St-Julien, Margaux), Napa Valley, Coonawarra, Maipo (CL), Toskana",
+      pairing: "Rindssteak, Lammkeule, Hartkäse, Wildschweinbraten",
       weine: [
-        { name:"Château Latour / Mouton / Lafite", detail:"Pauillac – Premiers Crus" },
-        { name:"Opus One", detail:"Napa – Mondavi / Rothschild" },
-        { name:"Sassicaia", detail:"Bolgheri, IT – Supertoskan" },
-        { name:"Penfolds Bin 707", detail:"Australien – Ikone" }
+        { name:"Château Latour (Pauillac)", detail:"Bordeaux – 1er Grand Cru Classé" },
+        { name:"Château Mouton Rothschild (Pauillac)", detail:"Bordeaux – Kunst auf Etiketten" },
+        { name:"Château Lafite Rothschild (Pauillac)", detail:"Bordeaux – Finesse, Eleganz" },
+        { name:"Château Léoville-Las Cases (St-Julien)", detail:"Bordeaux – «Super Second»" },
+        { name:"Opus One (Mondavi / Rothschild)", detail:"Napa Valley – Neue Welt Ikone" },
+        { name:"Screaming Eagle", detail:"Napa Valley – limitierter Kultwein" },
+        { name:"Harlan Estate", detail:"Napa Valley – teuerster Napa Cab" },
+        { name:"Sassicaia (Bolgheri)", detail:"Toskana – Supertoskan, Pionier" },
+        { name:"Penfolds Bin 707", detail:"Australien – Cab Sauv Ikone" },
+        { name:"Don Melchor (Concha y Toro)", detail:"Maipo, Chile – Referenz Latein-AM" }
       ]
     },
     {
-      name: "Merlot",
-      alias: null,
-      heimat: "Bordeaux, FR",
-      aromen: "Pflaume, Kirsche, Schokolade, Mocca, Leder (gereift)",
-      struktur: ["mittel-vollmundig","mittlere Tannine","weich"],
-      regionen: "Pomerol, St-Émilion, Ticino, Chile, Californien",
-      pairing: "Geflügel, Kalbfleisch, Pasta, Pilze",
+      name: "Merlot", alias: null, heimat: "Bordeaux, FR",
+      synonyme: [
+        { region: "Frankreich (regional)", name: "Bigney, Crabutet (historisch, Bordeaux)" },
+        { region: "Schweiz / Tessin", name: "Merlot del Ticino (DOC)" },
+        { region: "Norditalien", name: "Merlot (Friuli, Trentino, Venetien)" },
+        { region: "Osteuropa", name: "Merlot (weit verbreitet Bulgarien, Moldawien)" }
+      ],
+      aromen: "Pflaume, Kirsche, Schokolade, Mocca, Leder, Tabak (gereift)",
+      struktur: ["mittel-vollmundig","mittlere Tannine","weiche Textur"],
+      regionen: "Pomerol, St-Émilion, Fronsac, Tessin (CH), Friuli (IT), Californien, Chile",
+      pairing: "Geflügel, Kalbfleisch, Pasta, Pilzgerichte, Ragù",
       weine: [
-        { name:"Pétrus", detail:"Pomerol – teuerster Merlot" },
-        { name:"Château Le Pin", detail:"Pomerol – Kultwein" },
-        { name:"Cheval Blanc", detail:"St-Émilion – Merlot / Cab Franc" },
-        { name:"Merlot del Ticino DOC", detail:"Schweiz – Daniel Huber etc." }
+        { name:"Pétrus (Pomerol)", detail:"Bordeaux – teuerster Merlot, Legende" },
+        { name:"Château Le Pin (Pomerol)", detail:"Bordeaux – Kleinstproduktion, Kult" },
+        { name:"Château Cheval Blanc (St-Émilion)", detail:"Merlot / Cab Franc – ikonisch" },
+        { name:"Château Ausone (St-Émilion)", detail:"Älteste Lagen, Weltklasse" },
+        { name:"Masseto (Bolgheri, IT)", detail:"Toskana – Italiens bester Merlot" },
+        { name:"Duckhorn «Three Palms»", detail:"Napa Valley – US-Referenz" },
+        { name:"Merlot del Ticino (Daniel Huber)", detail:"Schweiz – Spitzenproduzent" },
+        { name:"Merlot Ticino (Christian Zündel)", detail:"Schweiz – elegant, biodynamisch" }
       ]
     },
     {
-      name: "Pinot Noir",
-      alias: "Blauburgunder, Spätburgunder",
-      heimat: "Burgund, FR",
-      aromen: "Kirsche, Himbeere, Erdbeere, Erde, Wildleder, Trüffel (gereift)",
-      struktur: ["leicht-mittel","niedrige Tannine","hohe Säure"],
-      regionen: "Côte d'Or, Oregon, Neuseeland, Deutschland",
-      pairing: "Ente, Lachs, Pilze, Softcheese",
+      name: "Pinot Noir", alias: "Blauburgunder (CH/AT), Spätburgunder (DE)", heimat: "Burgund, FR",
+      synonyme: [
+        { region: "Schweiz", name: "Blauburgunder; Clevner (Zürichsee-Region)" },
+        { region: "Deutschland", name: "Spätburgunder" },
+        { region: "Österreich", name: "Blauburgunder, Spätburgunder" },
+        { region: "Südtirol (IT)", name: "Blauburgunder, Pinot Nero" },
+        { region: "Elsass (FR)", name: "Pinot Noir d'Alsace" }
+      ],
+      aromen: "Kirsche, Himbeere, Erdbeere, Erde, Unterholz, Wildleder, Trüffel (gereift)",
+      struktur: ["leicht-mittel","niedrige Tannine","hohe Säure","seidige Textur"],
+      regionen: "Côte de Nuits (Burgund), Champagne, Oregon, Otago (NZ), Graubünden (CH)",
+      pairing: "Ente, Wildlachs, Pilze, Brie, Camembert, Trüffel",
       weine: [
-        { name:"Romanée-Conti (DRC)", detail:"Vosne-Romanée – unerreicht" },
-        { name:"Gevrey-Chambertin Grand Cru", detail:"Rousseau, Trapet etc." },
-        { name:"Felton Road (Otago, NZ)", detail:"Neue Welt – Referenz" },
-        { name:"Maienfelder Blauburgunder", detail:"Graubünden – Schweizer Spitze" }
+        { name:"Romanée-Conti (DRC)", detail:"Vosne-Romanée – unerreichter Weltgipfel" },
+        { name:"La Tâche (DRC)", detail:"Vosne-Romanée – etwas zugänglicher" },
+        { name:"Musigny Grand Cru (de Vogüé)", detail:"Chambolle – feinste Eleganz" },
+        { name:"Gevrey-Chambertin «Clos St-Jacques» (Rousseau)", detail:"Kraft und Finesse" },
+        { name:"Chambertin «Clos de Bèze» (Rousseau)", detail:"Gevrey – Grandeur" },
+        { name:"Domaine Leroy Chambertin", detail:"Burgund – biodynamisch, extrem selten" },
+        { name:"Eyrie Vineyards (Willamette Valley)", detail:"Oregon – Pionier" },
+        { name:"Beaux Frères (Willamette Valley)", detail:"Oregon – Parker-Entdeckung" },
+        { name:"Felton Road «Calvert» (Otago, NZ)", detail:"Neue Welt – Weltklasse" },
+        { name:"Maienfelder Blauburgunder (von Salis)", detail:"Graubünden CH – Schweizer Beste" },
+        { name:"Spätburgunder «Assmannshäuser» (Kesseler)", detail:"Rheingau – eleganter Stil" }
       ]
     },
     {
-      name: "Syrah / Shiraz",
-      alias: null,
-      heimat: "Rhône, FR",
-      aromen: "Schwarze Oliven, Pfeffer, Veilchen, Leder, Rauch, dunkle Beeren",
-      struktur: ["vollmundig","hohe Tannine","kräftig"],
-      regionen: "Hermitage, Côte-Rôtie, Barossa Valley",
-      pairing: "Lamm, Wild, BBQ, Würstli",
+      name: "Syrah / Shiraz", alias: null, heimat: "Nördliche Rhône, FR",
+      synonyme: [
+        { region: "Australien", name: "Shiraz (durchgängig so bezeichnet)" },
+        { region: "Südafrika", name: "Shiraz oder Syrah (beide gebräuchlich)" },
+        { region: "Argentinien", name: "Syrah (Mendoza, Neuquén)" },
+        { region: "Kreuzung", name: "Elternteil: Mondeuse Blanche × Dureza" }
+      ],
+      aromen: "Schwarze Oliven, Pfeffer (Nordrhône), Veilchen, Leder, Rauch, Brombeere, Fleisch",
+      struktur: ["vollmundig","hohe Tannine","kräftig","hoher Alkohol (AU)"],
+      regionen: "Hermitage, Côte-Rôtie, Crozes-Hermitage, Barossa, McLaren Vale, Stellenbosch",
+      pairing: "Lamm, Wild, Wildschwein, BBQ, kräftiger Käse",
       weine: [
-        { name:"Hermitage AOC", detail:"Jaboulet, Chave – nördl. Rhône" },
-        { name:"Côte-Rôtie «La Mouline» (Guigal)", detail:"Nördl. Rhône – La-La-Weine" },
-        { name:"Penfolds Grange", detail:"Australien – nationale Ikone" },
-        { name:"Torbreck «The Laird»", detail:"Barossa – Kultwein" }
+        { name:"Hermitage «La Chapelle» (Jaboulet)", detail:"Nördl. Rhône – historische Ikone" },
+        { name:"Hermitage (Jean-Louis Chave)", detail:"Nördl. Rhône – der Benchmark" },
+        { name:"Côte-Rôtie «La Mouline» (Guigal)", detail:"«La-La-Wein» – blumig, elegant" },
+        { name:"Côte-Rôtie «La Landonne» (Guigal)", detail:"«La-La-Wein» – dunkel, tanninreich" },
+        { name:"Penfolds Grange (Barossa)", detail:"Australien – nationale Ikone" },
+        { name:"Torbreck «The Laird» (Barossa)", detail:"Alte Reben, konzentriert" },
+        { name:"Two Hands «Bella's Garden»", detail:"Barossa – elegant, modern" },
+        { name:"Alain Graillot Crozes-Hermitage", detail:"Nördl. Rhône – Preis/Leistung" }
       ]
     },
     {
-      name: "Grenache",
-      alias: "Garnacha (ES)",
-      heimat: "Spanien",
-      aromen: "Erdbeere, Himbeere, weisser Pfeffer, Kräuter (garrigue), Anis",
-      struktur: ["mittel-voll","niedrige Tannine","hoher Alkohol"],
-      regionen: "Châteauneuf-du-Pape, Priorat, Rioja, Sardinien",
-      pairing: "Lamm, Poulet, mediterrane Küche",
+      name: "Grenache", alias: "Garnacha (ES), Cannonau (IT)", heimat: "Aragonien, Spanien",
+      synonyme: [
+        { region: "Spanien", name: "Garnacha Tinta, Garnacha Negra" },
+        { region: "Sardinien (IT)", name: "Cannonau (genetisch identisch)" },
+        { region: "Frankreich", name: "Grenache Noir (Rhône, Roussillon)" },
+        { region: "Australien", name: "Grenache (McLaren Vale, Barossa)" }
+      ],
+      aromen: "Erdbeere, Himbeere, weisser Pfeffer, Kräuter (garrigue), Anis, Ledernoten",
+      struktur: ["mittel-voll","niedrige Tannine","hoher Alkohol","wenig Farbe"],
+      regionen: "Châteauneuf-du-Pape, Gigondas, Priorat, Rioja, McLaren Vale (AU)",
+      pairing: "Lamm (Provence), Poulet rôti, mediterrane Gemüsegerichte, Tapenade",
       weine: [
-        { name:"Château Rayas (CdP)", detail:"100% Grenache – Legende" },
-        { name:"Châteauneuf-du-Pape AOC", detail:"Beaucastel, Pégau etc." },
-        { name:"Clos Mogador (Priorat)", detail:"Spanien – Garnacha pur" },
-        { name:"Cannonau di Sardegna DOC", detail:"Sardinien – rustikal, üppig" }
+        { name:"Château Rayas (Châteauneuf-du-Pape)", detail:"100% Grenache – Legende" },
+        { name:"Château Beaucastel (CdP)", detail:"Grenache dominant, vielschichtig" },
+        { name:"Domaine du Pégau (CdP)", detail:"Traditionell, kraftvoll" },
+        { name:"Gigondas (Domaine Santa Duc)", detail:"Rhône – unterschätzte Appellation" },
+        { name:"Álvaro Palacios «L'Ermita» (Priorat)", detail:"Spanien – Kultproduktion" },
+        { name:"Clos Mogador (Priorat)", detail:"Garnacha / Cariñena pur" },
+        { name:"Cannonau di Sardegna (Argiolas)", detail:"Sardinien – rustikal, üppig" },
+        { name:"Clarendon Hills «Blewitt Springs»", detail:"McLaren Vale – alte Reben" }
       ]
     },
     {
-      name: "Sangiovese",
-      alias: "Brunello, Prugnolo",
-      heimat: "Toskana, IT",
-      aromen: "Sauerkirsche, Tomate, Leder, Tabak, Rosenblüte, Kräuter",
-      struktur: ["mittel-vollmundig","hohe Tannine","hohe Säure"],
-      regionen: "Chianti, Brunello di Montalcino, Montepulciano",
-      pairing: "Bistecca, Tomatengerichte, Salumi",
+      name: "Sangiovese", alias: "Brunello (Montalcino), Prugnolo (Montepulciano), Morellino (Maremma)", heimat: "Toskana, IT",
+      synonyme: [
+        { region: "Montalcino (IT)", name: "Brunello" },
+        { region: "Montepulciano (IT)", name: "Prugnolo Gentile" },
+        { region: "Maremma / Scansano (IT)", name: "Morellino" },
+        { region: "Romagna (IT)", name: "Sangiovese di Romagna" },
+        { region: "Korsika (FR)", name: "Nielluccio" },
+        { region: "Achtung!", name: "Montepulciano d'Abruzzo = andere Rebsorte!" }
+      ],
+      aromen: "Sauerkirsche, Tomate, Leder, Tabak, Rosenblüte, Kräuter, Orangenschale",
+      struktur: ["mittel-vollmundig","hohe Tannine","sehr hohe Säure"],
+      regionen: "Chianti Classico, Brunello di Montalcino, Morellino di Scansano, Vino Nobile",
+      pairing: "Florentiner Bistecca, Tomatengerichte, Salumi, Trüffel, Hartkäse",
       weine: [
-        { name:"Brunello di Montalcino DOCG", detail:"Biondi-Santi – das Original" },
-        { name:"Chianti Classico Gran Selezione", detail:"Antinori, Isole e Olena etc." },
-        { name:"Tignanello", detail:"Toskana – Supertoskan-Ikone" },
-        { name:"Vino Nobile di Montepulciano", detail:"Toskana – unterschätzt" }
+        { name:"Brunello di Montalcino (Biondi-Santi)", detail:"Das Original – jahrzehntelang reifbar" },
+        { name:"Brunello «Riserva» (Soldera / Case Basse)", detail:"Legende, biodynamisch" },
+        { name:"Brunello (Giacomo Neri / Casanova di Neri)", detail:"Modern, international" },
+        { name:"Chianti Classico Gran Selezione (Antinori)", detail:"Tignanello-Haus" },
+        { name:"Tignanello (Antinori)", detail:"Supertoskan-Ikone, mit Cab Sauv" },
+        { name:"Fontalloro (Felsina)", detail:"Sangiovese pur – IGT, Weltklasse" },
+        { name:"Chianti Classico (Isole e Olena)", detail:"Referenz klassischer Stil" },
+        { name:"Morellino di Scansano (Moris Farms)", detail:"Maremma – zugänglich, preiswert" },
+        { name:"Vino Nobile di Montepulciano (Avignonesi)", detail:"Toskana – unterschätzt" }
       ]
     },
     {
-      name: "Nebbiolo",
-      alias: null,
-      heimat: "Piemont, IT",
-      aromen: "Rosen, Teer, Lakritze, Kirsche, Veilchen, Leder (gereift)",
-      struktur: ["vollmundig","sehr hohe Tannine","sehr hohe Säure"],
-      regionen: "Barolo DOCG, Barbaresco DOCG",
-      pairing: "Trüffel, Wild, Brasato, Hartkäse",
+      name: "Nebbiolo", alias: null, heimat: "Piemont, Italien",
+      synonyme: [
+        { region: "Valtellina (IT)", name: "Chiavennasca" },
+        { region: "Ghemme / Gattinara (IT)", name: "Spanna" },
+        { region: "Carema (IT)", name: "Picotener, Pugnet" },
+        { region: "Roero (IT)", name: "Nebbiolo (nördlich des Po)" }
+      ],
+      aromen: "Rosen, Teer, Lakritze, Sauerkirsche, Veilchen, Leder, Trüffel (gereift)",
+      struktur: ["vollmundig","extrem hohe Tannine","sehr hohe Säure","wenig Farbe"],
+      regionen: "Barolo DOCG, Barbaresco DOCG, Gattinara DOCG, Valtellina (IT)",
+      pairing: "Weisser Trüffel, Wildragù, Brasato al Barolo, Hartkäse (Parmigiano)",
       weine: [
-        { name:"Barolo DOCG", detail:"Giacomo Conterno, Gaja, Vietti" },
-        { name:"Barbaresco DOCG", detail:"Gaja, Bruno Giacosa – eleganter" },
-        { name:"Barolo «Monfortino» (Conterno)", detail:"Piemont – Kultstatus" },
-        { name:"Langhe Nebbiolo DOC", detail:"Einstieg, früher trinkbar" }
+        { name:"Barolo «Monfortino» Riserva (Giacomo Conterno)", detail:"Piemont – Kultproduktion" },
+        { name:"Barolo «Cannubi» (Vietti)", detail:"La Morra – elegantester Barolo" },
+        { name:"Barolo «Serralunga» (Fontanafredda)", detail:"Traditionell, strukturiert" },
+        { name:"Barbaresco «Sorì Tildin» (Gaja)", detail:"Barbaresco – international berühmt" },
+        { name:"Barbaresco «Santo Stefano» (Bruno Giacosa)", detail:"Treiso – traditioneller Stil" },
+        { name:"Barolo «Bricco Boschis» (Cavallotto)", detail:"Castiglione – biologisch" },
+        { name:"Gattinara DOCG (Travaglini)", detail:"Nordpiemont – unterschätzt" },
+        { name:"Valtellina Superiore (Nino Negri)", detail:"Lombardei – Chiavennasca pur" },
+        { name:"Langhe Nebbiolo (Sandrone)", detail:"Einstieg – früher zugänglich" }
       ]
     },
     {
-      name: "Tempranillo",
-      alias: "Tinta Roriz (PT)",
-      heimat: "Spanien",
-      aromen: "Kirschen, Pflaume, Vanille, Leder, Tabak, Kokos (Eiche)",
-      struktur: ["mittel-vollmundig","mittlere Tannine"],
-      regionen: "Rioja, Ribera del Duero, Douro",
-      pairing: "Lammchops, Tapas, Ibérico, Manchego",
+      name: "Tempranillo", alias: "Tinta Roriz (PT), Aragonez (PT)", heimat: "Rioja / Kastilien, ES",
+      synonyme: [
+        { region: "Ribera del Duero (ES)", name: "Tinto Fino, Tinto del País" },
+        { region: "Toro (ES)", name: "Tinta de Toro" },
+        { region: "Valdepeñas (ES)", name: "Cencibel" },
+        { region: "Portugal (Douro)", name: "Tinta Roriz" },
+        { region: "Portugal (Alentejo)", name: "Aragonez" },
+        { region: "Katalonien (ES)", name: "Ull de Llebre" }
+      ],
+      aromen: "Kirsche, Pflaume, Vanille, Leder, Tabak, Kokos / Dill (Eiche), Erdbeere",
+      struktur: ["mittel-vollmundig","mittlere Tannine","moderate Säure"],
+      regionen: "Rioja DOCa, Ribera del Duero DO, Toro DO, Douro (PT), Alentejo (PT)",
+      pairing: "Lammchops, Tapas, Ibérico-Schinken, Manchego, Chorizo",
       weine: [
-        { name:"Rioja Gran Reserva DOCa", detail:"La Rioja Alta, CVNE, Muga" },
+        { name:"Rioja Gran Reserva (La Rioja Alta «904»)", detail:"Rioja – Traditionshaus" },
+        { name:"Rioja Gran Reserva (CVNE «Imperial»)", detail:"Rioja – eleganter Klassiker" },
+        { name:"Rioja «Castillo Ygay» Gran Reserva (Marqués de Murrieta)", detail:"Historisch" },
         { name:"Vega Sicilia «Único»", detail:"Ribera del Duero – Spaniens Bester" },
-        { name:"Pingus", detail:"Ribera del Duero – limitiert" },
-        { name:"Pesquera (Alejandro Fernández)", detail:"Ribera – zugänglich, gut" }
+        { name:"Pingus (Dominio de Pingus)", detail:"Ribera del Duero – Kult, limitiert" },
+        { name:"Pesquera Crianza (Alejandro Fernández)", detail:"Ribera – zugänglich" },
+        { name:"Bodegas Emilio Moro", detail:"Ribera – modern, präzise" },
+        { name:"Quinta do Crasto Reserva (Douro)", detail:"Portugal – Tinta Roriz dominant" },
+        { name:"Herdade do Esporão Reserva (Alentejo)", detail:"Portugal – Aragonez" }
       ]
     },
     {
-      name: "Malbec",
-      alias: null,
-      heimat: "Cahors, FR",
-      aromen: "Pflaume, Brombeere, Schokolade, Veilchen, Leder",
-      struktur: ["vollmundig","mittlere Tannine","samtig"],
-      regionen: "Mendoza (AR), Cahors (FR)",
-      pairing: "Asado, Steak, Chorizo",
+      name: "Malbec", alias: "Côt (Loire), Auxerrois (Cahors)", heimat: "Cahors / Südwest-FR",
+      synonyme: [
+        { region: "Cahors (FR)", name: "Côt Noir, Auxerrois, Malbec" },
+        { region: "Loire (FR)", name: "Côt (Beimischung in Chinon, Bourgueil)" },
+        { region: "Bordeaux (FR)", name: "Malbec (historisch, heute selten)" },
+        { region: "Argentinien", name: "Malbec (Hauptrebsorte, weltbekannt)" },
+        { region: "Chile", name: "Malbec (Maule, Colchagua)" }
+      ],
+      aromen: "Pflaume, Brombeere, Schokolade, Veilchen, Leder, Tabak, Zwetschge",
+      struktur: ["vollmundig","mittlere bis hohe Tannine","samtiges Mundgefühl"],
+      regionen: "Mendoza (Luján de Cuyo, Valle de Uco), Cahors (FR), Patagonie (AR)",
+      pairing: "Argentinisches Asado, Steak, Chorizo, BBQ, Empanadas",
       weine: [
-        { name:"Cahors AOC", detail:"Frankreich – das Original" },
-        { name:"Achaval-Ferrer «Finca Altamira»", detail:"Mendoza – Hochlagenwein" },
-        { name:"Zuccardi Valle de Uco", detail:"Argentinien – modern" },
-        { name:"Catena Zapata «Adrianna»", detail:"Mendoza – Weltklasse" }
+        { name:"Cahors «Clos Triguedina» (Baldès)", detail:"Frankreich – das Original, tanninreich" },
+        { name:"Catena Zapata «Adrianna Vineyard»", detail:"Mendoza – Weltklasse (4500m)" },
+        { name:"Achaval-Ferrer «Finca Altamira»", detail:"Mendoza – Hochlagen, komplex" },
+        { name:"Zuccardi Valle de Uco «Concreto»", detail:"Argentinien – modernste Interpretation" },
+        { name:"Clos de los Siete (Michel Rolland)", detail:"Valle de Uco – international" },
+        { name:"Bressia «Profundo»", detail:"Mendoza – biodynamisch, terroir-betont" },
+        { name:"Trapiche «Ícono»", detail:"Mendoza – bekannter Exportwein" },
+        { name:"Clos Apalta (Casa Lapostolle)", detail:"Colchagua, Chile – elegant" }
       ]
     },
     {
-      name: "Zinfandel",
-      alias: "Primitivo (IT)",
-      heimat: "Kroatien (Tribidrag)",
-      aromen: "Brombeere, Feige, Pfeffer, Anis, Tabak, Marmelade (überreif)",
-      struktur: ["vollmundig","hoher Alkohol","weiche Tannine"],
-      regionen: "Sonoma, Lodi (CA), Apulien (IT)",
-      pairing: "BBQ, Ribs, Pizza, würzige Gerichte",
+      name: "Zinfandel", alias: "Primitivo (IT), Tribidrag (HR)", heimat: "Kroatien (Dalmatien)",
+      synonyme: [
+        { region: "Kroatien", name: "Tribidrag, Crljenak Kaštelanski (Urform)" },
+        { region: "Apulien (IT)", name: "Primitivo (genetisch identisch)" },
+        { region: "USA", name: "Zinfandel (Californien – Hauptanbauland)" }
+      ],
+      aromen: "Brombeere, Feige, Pfeffer, Anis, Tabak, Marmelade (überreif), Schokolade",
+      struktur: ["vollmundig","hoher Alkohol (oft 15%+)","weiche Tannine","üppig"],
+      regionen: "Sonoma (Dry Creek, Alexander Valley), Lodi (CA), Apulien (IT)",
+      pairing: "BBQ Ribs, Pulled Pork, Pizza, würzige Fleischgerichte",
       weine: [
-        { name:"Ridge «Lytton Springs»", detail:"Sonoma – Referenzproduzent" },
-        { name:"Turley Wine Cellars", detail:"CA – alte Reben, konzentriert" },
-        { name:"Primitivo di Manduria DOC", detail:"Apulien – preiswert, üppig" },
-        { name:"Ravenswood «Old Vine»", detail:"CA – zugänglicher Einstieg" }
+        { name:"Ridge «Lytton Springs»", detail:"Dry Creek Valley – Referenzproduzent" },
+        { name:"Ridge «Geyserville»", detail:"Alexander Valley – alte Reben, komplex" },
+        { name:"Turley «Dogtown»", detail:"Lodi – 100-jährige Reben" },
+        { name:"Turley «Hayne Vineyard»", detail:"Napa Valley – Kultstatus" },
+        { name:"Seghesio «Home Ranch»", detail:"Alexander Valley – Familientradition" },
+        { name:"Primitivo di Manduria «Archidamo» (Pervini)", detail:"Apulien – preiswert, üppig" },
+        { name:"Fellini Primitivo di Manduria", detail:"Apulien – moderner Stil" }
       ]
     },
     {
-      name: "Gamay",
-      alias: null,
-      heimat: "Burgund, FR",
-      aromen: "Banane (jung), rote Beeren, Veilchen, Kräuter",
-      struktur: ["leicht","niedrige Tannine","hohe Säure"],
-      regionen: "Beaujolais, Schweiz (Dôle)",
-      pairing: "Charcuterie, Poulet, gut gekühlt",
+      name: "Gamay", alias: null, heimat: "Burgund, FR",
+      synonyme: [
+        { region: "Frankreich (offiziell)", name: "Gamay Noir à Jus Blanc" },
+        { region: "Schweiz", name: "Gamay (Wallis, Waadt – Bestandteil Dôle)" },
+        { region: "Loire (FR)", name: "Gamay (Touraine, Anjou)" },
+        { region: "Savoyen (FR)", name: "Gamay (Vin de Savoie)" }
+      ],
+      aromen: "Himbeere, Kirsche, Banane (carbonic maceration), Veilchen, Kräuter, Pfeffer",
+      struktur: ["leicht","niedrige Tannine","hohe Säure","wenig Farbe"],
+      regionen: "Beaujolais (alle 10 Crus), Loire, Savoyen, Wallis (CH)",
+      pairing: "Charcuterie, Poulet, leichte Pasta, frischer Ziegenkäse – am besten gekühlt (14°C)",
       weine: [
-        { name:"Beaujolais-Villages AOC", detail:"Frankreich – Einstieg" },
-        { name:"Moulin-à-Vent / Morgon / Fleurie", detail:"Beaujolais Crus – lagerfähig" },
-        { name:"Beaujolais Nouveau", detail:"November-Frühling, jung" },
-        { name:"Dôle du Valais AOC", detail:"Schweiz – Gamay / Pinot-Blend" }
+        { name:"Moulin-à-Vent (Château des Jacques)", detail:"Beaujolais Cru – langlebig, komplex" },
+        { name:"Morgon «Côte du Py» (Jean Foillard)", detail:"Beaujolais – Naturwein-Ikone" },
+        { name:"Fleurie (Domaine de la Madone)", detail:"Beaujolais – blumig, elegant" },
+        { name:"Brouilly (Château de la Chaize)", detail:"Beaujolais – grösstes Cru" },
+        { name:"Chénas (Paul Janin)", detail:"Beaujolais – seltenstes Cru" },
+        { name:"Côte de Brouilly (Nicole Chanrion)", detail:"Beaujolais – mineralisch" },
+        { name:"Beaujolais Nouveau (Duboeuf)", detail:"November – jung, unfiltriert" },
+        { name:"Dôle du Valais (Cave des Chevaliers)", detail:"Schweiz – Gamay / Pinot Noir" }
       ]
     },
     {
-      name: "Corvina",
-      alias: null,
-      heimat: "Venetien, IT",
-      aromen: "Kirsche, Bittermandel, Kräuter; getrocknet: Schokolade, Rosinen",
-      struktur: ["leicht-mittel (Valpolicella)","sehr voll (Amarone)"],
-      regionen: "Valpolicella, Ripasso, Amarone, Recioto",
-      pairing: "Risotto, Brasato, Lammkeule (Amarone)",
+      name: "Corvina", alias: null, heimat: "Venetien, Italien",
+      synonyme: [
+        { region: "Venetien (IT)", name: "Corvina Veronese (vollständiger Name)" },
+        { region: "Verwandte Sorten", name: "Corvinone (ähnlich, oft Beimischung)" },
+        { region: "Blend-Partner", name: "Rondinella, Molinara, Oseleta" }
+      ],
+      aromen: "Frisch: Kirsche, Bittermandel, Kräuter. Getrocknet (Appassimento): Schokolade, Rosinen, Feige, Leder",
+      struktur: ["leicht-mittel (Valpolicella)","sehr voll und tanninreich (Amarone)"],
+      regionen: "Valpolicella Classico, Valpolicella Superiore, Amarone DOCG, Recioto DOCG",
+      pairing: "Risotto all'Amarone, Brasato, Lammkeule, Trüffel (Amarone), Hartkäse",
       weine: [
-        { name:"Amarone della Valpolicella DOCG", detail:"Masi, Dal Forno, Quintarelli" },
-        { name:"Giuseppe Quintarelli", detail:"Venetien – der Meister" },
-        { name:"Valpolicella Ripasso DOC", detail:"Zugänglich, täglich" },
-        { name:"Recioto della Valpolicella", detail:"Süsswein – Dessert" }
+        { name:"Amarone «Dal Forno Romano»", detail:"Venetien – ultrakonzentriert, Legende" },
+        { name:"Giuseppe Quintarelli Amarone", detail:"Der Meister – traditionell, langlebig" },
+        { name:"Amarone «Costasera» (Masi)", detail:"Venetien – bekannt, zugänglich" },
+        { name:"Allegrini Amarone", detail:"Venetien – modern, elegant" },
+        { name:"Tommasi Amarone della Valpolicella", detail:"Venetien – Familienweingut" },
+        { name:"Bertani Amarone (Riserva)", detail:"Venetien – historisch, langlebig" },
+        { name:"Valpolicella Ripasso (Zenato)", detail:"Preis/Leistung, täglich trinkbar" },
+        { name:"Recioto della Valpolicella (Accordini)", detail:"Süsswein – Dessert, selten" }
       ]
     }
   ]
@@ -700,9 +641,7 @@ function switchTab(tab, btn) {
   currentTab = tab;
   searchQuery = '';
   document.getElementById('searchInput').value = '';
-  document.querySelectorAll('.tab-btn').forEach(b => {
-    b.classList.remove('active','active-white','active-red');
-  });
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active','active-white','active-red'));
   btn.classList.add('active');
   btn.classList.add(tab === 'weiss' ? 'active-white' : 'active-red');
   render();
@@ -718,16 +657,13 @@ function render() {
   const empty = document.getElementById('emptyState');
   const countBar = document.getElementById('countBar');
   const items = data[currentTab];
-  const type = currentTab;
-  const isWhite = type === 'weiss';
+  const isWhite = currentTab === 'weiss';
 
   const filtered = items.filter(w => {
     if (!searchQuery) return true;
-    const haystack = [
-      w.name, w.alias, w.heimat, w.aromen, w.regionen, w.pairing,
-      ...w.struktur,
-      ...w.weine.map(x => x.name + ' ' + x.detail)
-    ].join(' ').toLowerCase();
+    const synText = w.synonyme ? w.synonyme.map(s => s.region + ' ' + s.name).join(' ') : '';
+    const haystack = [w.name, w.alias, w.heimat, w.aromen, w.regionen, w.pairing, synText,
+      ...w.struktur, ...w.weine.map(x => x.name + ' ' + x.detail)].join(' ').toLowerCase();
     return haystack.includes(searchQuery);
   });
 
@@ -743,7 +679,6 @@ function render() {
   grid.innerHTML = filtered.map(w => `
     <div class="wine-card">
       <div class="card-accent ${isWhite ? 'accent-white' : 'accent-red'}"></div>
-
       <div class="card-header">
         <div>
           <div class="sorte-name">${w.name}</div>
@@ -751,25 +686,33 @@ function render() {
         </div>
         <span class="heimat-badge ${isWhite ? 'badge-white-wine' : 'badge-red-wine'}">${w.heimat}</span>
       </div>
-
       <div class="structure-row">
         ${w.struktur.map(s => `<span class="pill ${isWhite ? 'pill-w' : 'pill-r'}">${s}</span>`).join('')}
       </div>
-
       <div class="card-section">
         <span class="section-label">Aromen</span>
         <div class="section-text">${w.aromen}</div>
       </div>
-
       <div class="card-section">
         <span class="section-label">Regionen</span>
         <div class="section-text">${w.regionen}</div>
       </div>
-
+      ${w.synonyme && w.synonyme.length ? `
       <hr class="card-divider">
-
       <div class="card-section">
-        <span class="section-label">Bekannte Weine</span>
+        <span class="section-label">Synonyme nach Region</span>
+        <div class="synonyme-list">
+          ${w.synonyme.map(s => `
+            <div class="synonym-row">
+              <span class="synonym-region">${s.region}</span>
+              <span class="synonym-name">${s.name}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>` : ''}
+      <hr class="card-divider">
+      <div class="card-section">
+        <span class="section-label">Bekannte Weine &amp; Produzenten</span>
         <div class="weine-list">
           ${w.weine.map(x => `
             <div class="wein-item">
@@ -782,9 +725,7 @@ function render() {
           `).join('')}
         </div>
       </div>
-
       <hr class="card-divider">
-
       <div class="card-section">
         <span class="section-label">Pairing</span>
         <div class="pairing-text">${w.pairing}</div>
