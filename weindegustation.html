@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tom's Weindegustations-Assistent</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --wine:    #6B1E2A;
+    --gold:    #A8762A;
+    --cream:   #FDFAF5;
+    --dark:    #2A1A10;
+    --muted:   #8A7560;
+    --border:  rgba(107,30,42,0.15);
+    --glass:   #FFFFFF;
+    --shadow:  0 2px 16px rgba(107,30,42,0.08);
+    --text:    #2A1A10;
+    --bg:      #F5EFE6;
+    --card-bg: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 70% 50% at 10% 0%, rgba(107,30,42,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 90% 100%, rgba(168,118,42,0.07) 0%, transparent 60%);
+  }
+
+  /* ── LAYOUT ── */
+  .shell {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    margin-bottom: 52px;
+    padding: 36px 24px 32px;
+    background: var(--wine);
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 120% at 50% 120%, rgba(255,255,255,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .logo-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  .logo-line::before, .logo-line::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.2);
+  }
+  .logo-icon {
+    font-size: 28px;
+    line-height: 1;
+  }
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(24px, 4.5vw, 38px);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: #FDFAF5;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .subtitle {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(253,250,245,0.65);
+    font-weight: 400;
+    position: relative;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 3px;
+    background: rgba(107,30,42,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--wine), #A83248);
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .progress-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ── SECTION CARD ── */
+  .section-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 32px 36px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.4s ease forwards;
+    opacity: 0;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--wine);
+    margin-bottom: 6px;
+    font-weight: 500;
+    opacity: 0.7;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--wine);
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── QUESTION BLOCK ── */
+  .q-block {
+    margin-bottom: 28px;
+  }
+  .q-block:last-child { margin-bottom: 0; }
+
+  .q-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--dark);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .q-hint {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  /* ── RADIO / CHECKBOX CHIPS ── */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip input { display: none; }
+  .chip label {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border: 1px solid rgba(107,30,42,0.2);
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    letter-spacing: 0.02em;
+    user-select: none;
+    background: #FDFAF5;
+  }
+  .chip label:hover {
+    border-color: var(--wine);
+    color: var(--wine);
+    background: rgba(107,30,42,0.04);
+  }
+  .chip input:checked + label {
+    background: rgba(107,30,42,0.08);
+    border-color: var(--wine);
+    color: var(--wine);
+    font-weight: 500;
+  }
+
+  /* ── AROMA GROUPS ── */
+  .aroma-group {
+    margin-bottom: 8px;
+    border: 1px solid rgba(107,30,42,0.12);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .aroma-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: #FAF6F0;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .aroma-group-header:hover { background: rgba(107,30,42,0.05); }
+  .aroma-group-name {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--dark);
+  }
+  .aroma-group-name.selected { color: var(--wine); }
+  .aroma-arrow {
+    font-size: 10px;
+    color: var(--muted);
+    transition: transform 0.2s;
+  }
+  .aroma-group.open .aroma-arrow { transform: rotate(180deg); }
+  .aroma-examples {
+    display: none;
+    padding: 12px 14px 14px;
+    border-top: 1px solid rgba(107,30,42,0.08);
+    background: #FFFFFF;
+  }
+  .aroma-group.open .aroma-examples { display: block; }
+  .aroma-ex-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  /* ── SCORE SLIDER-STYLE ── */
+  .score-options {
+    display: flex;
+    gap: 0;
+  }
+  .score-options .chip label {
+    border-radius: 0;
+    border-right-width: 0;
+    min-width: 60px;
+    justify-content: center;
+  }
+  .score-options .chip:first-child label { border-radius: 1px 0 0 1px; }
+  .score-options .chip:last-child  label { border-radius: 0 1px 1px 0; border-right-width: 1px; }
+
+  /* ── WINE TYPE SELECTOR ── */
+  .wine-type-wrap {
+    display: flex;
+    gap: 0;
+    margin-bottom: 32px;
+  }
+  .wine-type-btn {
+    flex: 1;
+    padding: 12px;
+    background: #FDFAF5;
+    border: 1px solid rgba(107,30,42,0.18);
+    border-right-width: 0;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .wine-type-btn:last-child { border-right-width: 1px; }
+  .wine-type-btn:hover { background: rgba(107,30,42,0.04); color: var(--dark); }
+  .wine-type-btn.active {
+    background: var(--wine);
+    border-color: var(--wine);
+    color: #FDFAF5;
+    font-weight: 500;
+  }
+
+  /* ── TEXT INPUT ── */
+  .field {
+    width: 100%;
+    background: #FDFAF5;
+    border: 1px solid rgba(107,30,42,0.18);
+    border-radius: 2px;
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.18s;
+  }
+  .field:focus { border-color: var(--wine); box-shadow: 0 0 0 3px rgba(107,30,42,0.06); }
+  .field::placeholder { color: rgba(138,117,96,0.5); }
+
+  /* ── NAVIGATION ── */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 36px;
+  }
+  .btn {
+    padding: 12px 32px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 2px;
+  }
+  .btn-primary {
+    background: var(--wine);
+    color: #FDFAF5;
+    border: 1px solid var(--wine);
+  }
+  .btn-primary:hover {
+    background: #8B2535;
+    border-color: #8B2535;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(107,30,42,0.25);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid rgba(107,30,42,0.18);
+  }
+  .btn-ghost:hover { color: var(--dark); border-color: rgba(107,30,42,0.35); background: rgba(107,30,42,0.03); }
+  .btn-gold {
+    background: var(--wine);
+    color: #FDFAF5;
+    border: 1px solid var(--wine);
+    font-weight: 600;
+  }
+  .btn-gold:hover {
+    background: #8B2535;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(107,30,42,0.3);
+  }
+
+  /* ── RESULT PAGE ── */
+  .result-blik {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 24px 0;
+  }
+  .blik-cell {
+    border: 1px solid rgba(107,30,42,0.15);
+    border-radius: 3px;
+    padding: 16px 12px;
+    text-align: center;
+    background: #FAF6F0;
+  }
+  .blik-letter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--wine);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .blik-name {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .blik-score {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--dark);
+  }
+  .total-score-wrap {
+    text-align: center;
+    padding: 28px;
+    border: 2px solid var(--wine);
+    border-radius: 3px;
+    margin: 24px 0;
+    background: rgba(107,30,42,0.04);
+  }
+  .total-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    color: var(--wine);
+    line-height: 1;
+  }
+  .total-max { font-size: 20px; color: var(--muted); }
+  .total-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  .quality-badge {
+    display: inline-block;
+    padding: 6px 20px;
+    border: 1px solid var(--wine);
+    border-radius: 2px;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--wine);
+    margin-top: 10px;
+    font-weight: 500;
+  }
+
+  /* ── DETAIL SUMMARY ── */
+  .summary-grid {
+    display: grid;
+    gap: 4px;
+    margin-top: 20px;
+  }
+  .sum-row {
+    display: flex;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(107,30,42,0.06);
+    font-size: 12px;
+  }
+  .sum-key {
+    color: var(--muted);
+    min-width: 130px;
+    flex-shrink: 0;
+  }
+  .sum-val { color: var(--dark); }
+
+  /* ── STEP INDICATOR ── */
+  .step-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .step-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(107,30,42,0.15);
+    transition: all 0.3s;
+  }
+  .step-dot.active  { background: var(--wine); width: 20px; border-radius: 3px; }
+  .step-dot.done    { background: rgba(107,30,42,0.35); }
+
+  @media (max-width: 500px) {
+    .shell { padding: 28px 16px 60px; }
+    .section-card { padding: 22px 18px; }
+    .result-blik { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header>
+    <div class="logo-line"><span class="logo-icon">🍷</span></div>
+    <h1>Tom's Weindegustations-Assistent</h1>
+    <p class="subtitle">Beurteilungsblatt · BLIK-System</p>
+  </header>
+
+  <!-- STEP DOTS -->
+  <div class="step-dots" id="stepDots"></div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <span class="progress-label" id="progressLabel">Schritt 1 / 6</span>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="appContent"></div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+const state = {
+  wineType: 'weiss',   // 'weiss' | 'rot' | 'rose'
+  weinName: '',
+  jahrgang: '',
+  rebsorte: '',
+  herkunft: '',
+  preis: '',
+  glasNr: '',
+
+  // Auge
+  farbIntensitaet: '',
+  farbton: '',
+
+  // Nase
+  nasenIntensitaet: '',
+  nasenAromen: [],
+  nasenAromenDetails: {},
+  komplexitaet: '',
+
+  // Gaumen
+  suesseGaumen: '',
+  strukturGaumen: '',
+  koerper: '',
+  balance: '',
+  gaumenAromen: [],
+  gaumenAromenDetails: {},
+  abgang: '',
+
+  // Scores BLIK
+  scoreI: '',
+  scoreK: '',
+  scoreB: '',
+  scoreL: '',
+};
+
+// ═══════════════════════════════════════════════════════
+//  AROMA DATA
+// ═══════════════════════════════════════════════════════
+const AROMEN = {
+  pflanzlich: {
+    label: 'Pflanzlich',
+    weiss: ['Grüne Peperoni','Gras','Spargel','Blätterkraut','Kohl','Eukalyptus','Minze','Medizinkräuter','Fenchel','Dill'],
+    rot:   ['Grüne Peperoni','Gras','Randen','Tomatenkraut','Kartoffel','Spargel','Cassisblätter','Kraut','Kohl','Erbsen','Bohnen','Schwarze Oliven','Grüne Oliven'],
+    rose:  ['Grüne Peperoni','Gras','Spargel','Kräuter','Eukalyptus'],
+    kategorie: 'Sorten-Aroma'
+  },
+  blumig: {
+    label: 'Blumig',
+    weiss: ['Akazienblüten','Kamille','Lindenblüten','Holunderblüte','Rose'],
+    rot:   ['Veilchen'],
+    rose:  ['Rose','Pfingstrose','Hibiskus'],
+    kategorie: 'Sorten-Aroma'
+  },
+  fruchtig: {
+    label: 'Fruchtig',
+    weiss: ['Apfel','Stachelbeere','Traube','Birne','Grapefruit','Zitrone','Limette','Quitte','Pfirsich','Aprikose','Nektarine','Banane','Litschi','Mango','Honigmelone','Passionsfrucht','Ananas'],
+    rot:   ['Rote Johannisbeere','Himbeere','Erdbeere','Rote Kirsche','Preiselbeere','Pflaume','Schwarze Johannisbeere','Brombeere','Heidelbeere','Schwarze Kirsche'],
+    rose:  ['Erdbeere','Himbeere','Wassermelone','Rote Johannisbeere','Grapefruit'],
+    kategorie: 'Sorten-Aroma'
+  },
+  ueberreif: {
+    label: 'Überreif',
+    weiss: ['Apfelkompott','Birnenkompott','Orangenmarmelade','Kochapfel','Getrocknete Aprikose','Kochbanane','Rosine','Honig'],
+    rot:   ['Feige','Backpflaume','Rosine','Sultanine','Kirschwasser','Konfitüre','Fruchtkompott','Fruchtkonserve','Schokolade'],
+    rose:  ['Konfitüre','Getrocknete Früchte'],
+    kategorie: 'Sorten-Aroma'
+  },
+  buttrig: {
+    label: 'Buttrig',
+    weiss: ['Milch','Joghurt','Rahm','Butter','Käse'],
+    rot:   ['Milch','Joghurt','Rahm','Butter','Käse'],
+    rose:  ['Rahm','Butter'],
+    kategorie: 'Ausbau-Aroma'
+  },
+  holzig: {
+    label: 'Holzig',
+    weiss: ['Eichenholz','Vanille','Caramel','Toast','Kaffee','Rauch','Speck','Kohle'],
+    rot:   ['Eichenholz','Vanille','Caramel','Toast','Kaffee','Rauch','Speck','Kohle'],
+    rose:  ['Vanille','Toast'],
+    kategorie: 'Ausbau-Aroma'
+  },
+  wuerzig: {
+    label: 'Würzig',
+    weiss: ['Pfeffer','Ingwer'],
+    rot:   ['Pfeffer','Zimt','Gewürznelke','Ingwer','Muskatnuss','Lakritze'],
+    rose:  ['Pfeffer','Kräuter'],
+    kategorie: 'Reife-Aroma'
+  },
+  erdig: {
+    label: 'Erdig',
+    weiss: ['Pilze','Walnuss','Laub','Moos'],
+    rot:   ['Pilze','Heu','Feuchtes Laub','Waldboden','Wildbret','Tabak','Zedernholz'],
+    rose:  ['Kräuter','Erde'],
+    kategorie: 'Reife-Aroma'
+  }
+};
+
+const AROMA_KEYS = Object.keys(AROMEN);
+
+// ═══════════════════════════════════════════════════════
+//  STEPS CONFIG
+// ═══════════════════════════════════════════════════════
+// Steps: 0=WeinTyp+Info, 1=Auge, 2=Nase, 3=Gaumen, 4=Scores, 5=Ergebnis
+const TOTAL_STEPS = 6;
+let currentStep = 0;
+
+// ═══════════════════════════════════════════════════════
+//  RENDER ENGINE
+// ═══════════════════════════════════════════════════════
+function render() {
+  updateProgress();
+  renderDots();
+  const el = document.getElementById('appContent');
+  el.innerHTML = '';
+  const card = document.createElement('div');
+  card.className = 'section-card';
+
+  switch(currentStep) {
+    case 0: buildStep0(card); break;
+    case 1: buildStep1(card); break;
+    case 2: buildStep2(card); break;
+    case 3: buildStep3(card); break;
+    case 4: buildStep4(card); break;
+    case 5: buildStep5(card); break;
+  }
+
+  el.appendChild(card);
+}
+
+function updateProgress() {
+  const pct = (currentStep / (TOTAL_STEPS - 1)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `Schritt ${currentStep + 1} / ${TOTAL_STEPS}`;
+}
+
+function renderDots() {
+  const wrap = document.getElementById('stepDots');
+  wrap.innerHTML = '';
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    const d = document.createElement('div');
+    d.className = 'step-dot' + (i === currentStep ? ' active' : i < currentStep ? ' done' : '');
+    wrap.appendChild(d);
+  }
+}
+
+// ── NAVIGATION ──
+function navRow(card, showBack = true, nextLabel = 'Weiter →', nextFn = null) {
+  const row = document.createElement('div');
+  row.className = 'nav-row';
+  if (showBack) {
+    const back = document.createElement('button');
+    back.className = 'btn btn-ghost';
+    back.textContent = '← Zurück';
+    back.onclick = () => { currentStep--; render(); };
+    row.appendChild(back);
+  } else {
+    row.appendChild(document.createElement('span'));
+  }
+  const next = document.createElement('button');
+  next.className = nextLabel.includes('PDF') ? 'btn btn-gold' : 'btn btn-primary';
+  next.textContent = nextLabel;
+  next.onclick = nextFn || (() => { currentStep++; render(); });
+  row.appendChild(next);
+  card.appendChild(row);
+}
+
+// ─────────────────────────────────────────────
+//  STEP 0 – Weininfo & Weintyp
+// ─────────────────────────────────────────────
+function buildStep0(card) {
+  card.innerHTML = `
+    <div class="section-eyebrow">Schritt 1 von 6</div>
+    <div class="section-title">Wein & Weintyp</div>
+  `;
+
+  // Wine type
+  const typeWrap = document.createElement('div');
+  typeWrap.className = 'wine-type-wrap';
+  [['weiss','⬜ Weisswein'],['rot','🟥 Rotwein'],['rose','🌸 Rosé']].forEach(([val, label]) => {
+    const b = document.createElement('button');
+    b.className = 'wine-type-btn' + (state.wineType === val ? ' active' : '');
+    b.textContent = label;
+    b.onclick = () => {
+      state.wineType = val;
+      document.querySelectorAll('.wine-type-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    };
+    typeWrap.appendChild(b);
+  });
+  card.appendChild(typeWrap);
+
+  // Info fields
+  const fields = [
+    ['weinName',  'Weinname / Bezeichnung', 'z. B. Insoglio del Cinghiale'],
+    ['jahrgang',  'Jahrgang', 'z. B. 2021'],
+    ['rebsorte',  'Rebsorte (falls bekannt)', 'z. B. Sangiovese'],
+    ['herkunft',  'Herkunft / Appellation', 'z. B. Toscana IGT'],
+    ['preis',     'Preis (CHF)', 'z. B. 25'],
+    ['glasNr',    'Glas Nr.', ''],
+  ];
+
+  fields.forEach(([key, label, ph]) => {
+    const b = document.createElement('div');
+    b.className = 'q-block';
+    b.innerHTML = `<div class="q-label">${label}</div>`;
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'field';
+    inp.placeholder = ph;
+    inp.value = state[key];
+    inp.oninput = () => state[key] = inp.value;
+    b.appendChild(inp);
+    card.appendChild(b);
+  });
+
+  navRow(card, false, 'Weiter →');
+}
+
+// ─────────────────────────────────────────────
+//  STEP 1 – AUGE
+// ─────────────────────────────────────────────
+function buildStep1(card) {
+  card.innerHTML = `
+    <div class="section-eyebrow">Schritt 2 von 6 · Visuelle Analyse</div>
+    <div class="section-title">Das Auge 👁</div>
+  `;
+
+  // Intensität
+  const hints = {
+    weiss: 'Blass = jung, kühles Klima, Stahltank, trocken · Tieffarbig = reif, warmes Klima, Eichenfass, süss',
+    rot: 'Blass = gereift, kühles Klima, dünnschalige Sorten (Pinot, Grenache) · Tieffarbig = jung, warmes Klima, dickschalige Sorten (Syrah, Cabernet)',
+    rose: 'Hellrosa bis Lachsrosa'
+  };
+  addChips(card, 'Farbintensität', 'farbIntensitaet',
+    ['blass','mittel','tieffarbig'], false,
+    hints[state.wineType]);
+
+  // Farbton
+  if (state.wineType === 'weiss') {
+    addChips(card, 'Farbton', 'farbton',
+      ['Zitronengelb','Goldgelb'], false,
+      'Zitronengelb = jung, Stahltank, kühles Klima · Goldgelb = süss, reif');
+  } else if (state.wineType === 'rot') {
+    addChips(card, 'Farbton', 'farbton',
+      ['Purpurrot','Rubinrot','Granatrot'], false,
+      'Purpur = jung · Rubin = normal (~80%) · Granatrot = gereift');
+  } else {
+    addChips(card, 'Farbton', 'farbton',
+      ['Hellrosa','Lachsrosa'], false, '');
+  }
+
+  navRow(card, true, 'Weiter →');
+}
+
+// ─────────────────────────────────────────────
+//  STEP 2 – NASE
+// ─────────────────────────────────────────────
+function buildStep2(card) {
+  card.innerHTML = `
+    <div class="section-eyebrow">Schritt 3 von 6 · Geruchsanalyse</div>
+    <div class="section-title">Die Nase 👃 · BLIK: I & K</div>
+  `;
+
+  addChips(card, 'Intensität (I)', 'nasenIntensitaet',
+    ['neutral','mittel','aromatisch'], false,
+    'Wie stark ist die Nase insgesamt?');
+
+  addScoreChips(card, 'Score Intensität (I)', 'scoreI');
+
+  // Aromen
+  buildAromaSection(card, 'nasen');
+
+  addScoreChips(card, 'Komplexität / Vielfalt (K) – Vielschichtigkeit der Aromen', 'scoreK',
+    '0 = eindimensional · 0.5 = mehrere Aromengruppen · 1 = vielschichtig, entwickelt sich im Glas');
+
+  navRow(card, true, 'Weiter →');
+}
+
+// ─────────────────────────────────────────────
+//  STEP 3 – GAUMEN
+// ─────────────────────────────────────────────
+function buildStep3(card) {
+  card.innerHTML = `
+    <div class="section-eyebrow">Schritt 4 von 6 · Geschmacksprobe</div>
+    <div class="section-title">Der Gaumen 👅 · BLIK: B & L</div>
+  `;
+
+  addChips(card, 'Süsse', 'suesseGaumen',
+    ['trocken','leicht süss','süss'], false, '');
+
+  if (state.wineType === 'rot') {
+    addChips(card, 'Struktur / Tannine', 'strukturGaumen',
+      ['etwas pelzig','sehr pelzig'], false,
+      'Pelziges Mundgefühl = Tannine. Je mehr Pelzigkeit, desto mehr Struktur.');
+  } else {
+    addChips(card, 'Säure', 'strukturGaumen',
+      ['etwas sauer','sehr sauer'], false,
+      'Säure belebt den Wein und verleiht Frische und Länge.');
+  }
+
+  addChips(card, 'Körper', 'koerper',
+    ['leicht','mittel','schwer'], false,
+    'Alkohol, Zucker und reife Tannine = schwer · Wasser und Säuren = leicht');
+
+  addChips(card, 'Balance (B)', 'balance',
+    ['hart','lebhaft','ausgewogen','mild','plump'], false,
+    'Hart = zu viel Struktur · Lebhaft = Säure/Tannine spürbar · Ausgewogen = Struktur & Charme gleichwertig · Mild = Frucht & Körper dominieren · Plump = zu viel Charme');
+
+  addScoreChips(card, 'Score Balance (B)', 'scoreB');
+
+  buildAromaSection(card, 'gaumen');
+
+  addChips(card, 'Abgang / Länge (L)', 'abgang',
+    ['kurz (< 5s)','mittel (5–10s)','lang (> 10s)'], false,
+    'Wie lange bleibt der Geschmack nach dem Schlucken wahrnehmbar?');
+
+  addScoreChips(card, 'Score Länge (L)', 'scoreL');
+
+  navRow(card, true, 'Weiter →');
+}
+
+// ─────────────────────────────────────────────
+//  STEP 4 – GESAMTURTEIL
+// ─────────────────────────────────────────────
+function buildStep4(card) {
+  card.innerHTML = `
+    <div class="section-eyebrow">Schritt 5 von 6 · Gesamturteil</div>
+    <div class="section-title">BLIK-Gesamtbewertung</div>
+  `;
+
+  const scores = [
+    { label: 'B – Balance', key: 'scoreB' },
+    { label: 'L – Länge', key: 'scoreL' },
+    { label: 'I – Intensität (Nase)', key: 'scoreI' },
+    { label: 'K – Komplexität (Nase)', key: 'scoreK' },
+  ];
+
+  const total = calcTotal();
+  const sumDiv = document.createElement('div');
+  sumDiv.innerHTML = `
+    <div style="margin-bottom:24px;">
+      <div class="q-hint">Überprüfe oder korrigiere hier deine BLIK-Scores. Die Gesamtpunktzahl ergibt sich aus I + K + B + L (max. 4 Punkte).</div>
+    </div>
+  `;
+  card.appendChild(sumDiv);
+
+  scores.forEach(s => {
+    addScoreChips(card, s.label, s.key);
+  });
+
+  // Live total
+  const totDiv = document.createElement('div');
+  totDiv.id = 'liveTotalWrap';
+  totDiv.style.cssText = 'text-align:center;padding:20px;border:1px solid rgba(107,30,42,0.2);border-radius:3px;margin:24px 0;background:rgba(107,30,42,0.04);';
+  totDiv.innerHTML = `<div style="font-family:Cormorant Garamond,serif;font-size:48px;font-weight:300;color:var(--wine)">${calcTotal()}<span style="font-size:22px;color:var(--muted)">/4</span></div>
+  <div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-top:6px">BLIK Gesamtscore</div>`;
+  card.appendChild(totDiv);
+
+  // Auto-refresh total when chips clicked
+  setTimeout(() => {
+    document.querySelectorAll('input[type=radio]').forEach(r => {
+      r.addEventListener('change', () => {
+        const w = document.getElementById('liveTotalWrap');
+        if (w) w.querySelector('div').innerHTML = `${calcTotal()}<span style="font-size:22px;color:var(--muted)">/4</span>`;
+      });
+    });
+  }, 50);
+
+  navRow(card, true, 'Ergebnis anzeigen →');
+}
+
+// ─────────────────────────────────────────────
+//  STEP 5 – ERGEBNIS
+// ─────────────────────────────────────────────
+function buildStep5(card) {
+  const total = calcTotal();
+  const quality = getQuality(total);
+
+  card.innerHTML = `
+    <div class="section-eyebrow">Schritt 6 von 6 · Abschluss</div>
+    <div class="section-title">Gesamtbewertung</div>
+  `;
+
+  // Wine identity
+  const wineName = state.weinName || '–';
+  const header = document.createElement('div');
+  header.style.cssText = 'margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.07);';
+  header.innerHTML = `
+    <div style="font-family:Cormorant Garamond,serif;font-size:26px;font-weight:400;color:var(--cream)">${wineName}</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:2px">${[state.jahrgang, state.rebsorte, state.herkunft].filter(Boolean).join(' · ') || '—'}</div>
+  `;
+  card.appendChild(header);
+
+  // BLIK grid
+  const blikGrid = document.createElement('div');
+  blikGrid.className = 'result-blik';
+  [['B','Balance', state.scoreB],['L','Länge', state.scoreL],['I','Intensität', state.scoreI],['K','Komplexität', state.scoreK]].forEach(([l, n, s]) => {
+    blikGrid.innerHTML += `
+      <div class="blik-cell">
+        <div class="blik-letter">${l}</div>
+        <div class="blik-name">${n}</div>
+        <div class="blik-score">${s || '–'}</div>
+      </div>`;
+  });
+  card.appendChild(blikGrid);
+
+  // Total
+  const totWrap = document.createElement('div');
+  totWrap.className = 'total-score-wrap';
+  totWrap.innerHTML = `
+    <div class="total-number">${total}<span class="total-max"> /4</span></div>
+    <div class="total-label">BLIK Gesamtscore</div>
+    <div class="quality-badge">${quality}</div>
+  `;
+  card.appendChild(totWrap);
+
+  // Summary details
+  const sumDiv = document.createElement('div');
+  sumDiv.className = 'summary-grid';
+  const rows = [
+    ['Weintyp', state.wineType.charAt(0).toUpperCase() + state.wineType.slice(1)],
+    ['Farbintensität', state.farbIntensitaet],
+    ['Farbton', state.farbton],
+    ['Nasenintensität', state.nasenIntensitaet],
+    ['Nase – Aromen', formatAromen('nasen')],
+    ['Komplexität (K)', state.scoreK],
+    ['Süsse', state.suesseGaumen],
+    ['Struktur', state.strukturGaumen],
+    ['Körper', state.koerper],
+    ['Balance', state.balance],
+    ['Gaumen – Aromen', formatAromen('gaumen')],
+    ['Abgang', state.abgang],
+    ['Preis', state.preis ? 'CHF ' + state.preis : ''],
+    ['Glas Nr.', state.glasNr],
+  ];
+  rows.forEach(([k, v]) => {
+    if (!v) return;
+    sumDiv.innerHTML += `<div class="sum-row"><span class="sum-key">${k}</span><span class="sum-val">${v}</span></div>`;
+  });
+  card.appendChild(sumDiv);
+
+  // Buttons
+  const row = document.createElement('div');
+  row.className = 'nav-row';
+  row.style.marginTop = '32px';
+
+  const backBtn = document.createElement('button');
+  backBtn.className = 'btn btn-ghost';
+  backBtn.textContent = '← Zurück';
+  backBtn.onclick = () => { currentStep--; render(); };
+
+  const pdfBtn = document.createElement('button');
+  pdfBtn.className = 'btn btn-gold';
+  pdfBtn.textContent = '⬇ Als PDF speichern';
+  pdfBtn.onclick = generatePDF;
+
+  row.appendChild(backBtn);
+  row.appendChild(pdfBtn);
+  card.appendChild(row);
+}
+
+// ═══════════════════════════════════════════════════════
+//  HELPER: Chips
+// ═══════════════════════════════════════════════════════
+function addChips(card, label, stateKey, options, multi, hint) {
+  const block = document.createElement('div');
+  block.className = 'q-block';
+  block.innerHTML = `<div class="q-label">${label}</div>`;
+  if (hint) block.innerHTML += `<div class="q-hint">${hint}</div>`;
+
+  const chips = document.createElement('div');
+  chips.className = 'chips';
+
+  options.forEach((opt, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    const id = `chip_${stateKey}_${i}`;
+    const inp = document.createElement('input');
+    inp.type = multi ? 'checkbox' : 'radio';
+    inp.name = stateKey;
+    inp.id = id;
+    inp.value = opt;
+
+    if (multi) {
+      inp.checked = (state[stateKey] || []).includes(opt);
+      inp.onchange = () => {
+        if (!state[stateKey]) state[stateKey] = [];
+        if (inp.checked) state[stateKey].push(opt);
+        else state[stateKey] = state[stateKey].filter(x => x !== opt);
+      };
+    } else {
+      inp.checked = state[stateKey] === opt;
+      inp.onchange = () => { state[stateKey] = opt; };
+    }
+
+    const lbl = document.createElement('label');
+    lbl.htmlFor = id;
+    lbl.textContent = opt;
+
+    chip.appendChild(inp);
+    chip.appendChild(lbl);
+    chips.appendChild(chip);
+  });
+
+  block.appendChild(chips);
+  card.appendChild(block);
+}
+
+function addScoreChips(card, label, stateKey, hint) {
+  const block = document.createElement('div');
+  block.className = 'q-block';
+  block.innerHTML = `<div class="q-label">${label}</div>`;
+  if (hint) block.innerHTML += `<div class="q-hint">${hint}</div>`;
+
+  const scores = document.createElement('div');
+  scores.className = 'chips score-options';
+
+  ['0','0.5','1'].forEach((val, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    const id = `score_${stateKey}_${i}`;
+    const inp = document.createElement('input');
+    inp.type = 'radio';
+    inp.name = stateKey;
+    inp.id = id;
+    inp.value = val;
+    inp.checked = state[stateKey] === val;
+    inp.onchange = () => { state[stateKey] = val; };
+
+    const labels = {
+      scoreI: ['Neutral (0)','Mittel (0.5)','Aromatisch (1)'],
+      scoreK: ['Simpel (0)','Mehrschichtig (0.5)','Komplex (1)'],
+      scoreB: ['Unbalanciert (0)','Akzeptabel (0.5)','Ausgewogen (1)'],
+      scoreL: ['Kurz (0)','Mittel (0.5)','Lang (1)'],
+    };
+    const lbl = document.createElement('label');
+    lbl.htmlFor = id;
+    lbl.textContent = (labels[stateKey] || [val,val,val])[i];
+
+    chip.appendChild(inp);
+    chip.appendChild(lbl);
+    scores.appendChild(chip);
+  });
+
+  block.appendChild(scores);
+  card.appendChild(block);
+}
+
+// ═══════════════════════════════════════════════════════
+//  HELPER: Aroma accordion
+// ═══════════════════════════════════════════════════════
+function buildAromaSection(card, context) {
+  const aromaKey = context + 'Aromen';
+  const detailKey = context + 'AromenDetails';
+
+  const block = document.createElement('div');
+  block.className = 'q-block';
+  block.innerHTML = `<div class="q-label">Aromen – Klicke eine Gruppe an, wähle Oberbegriff, dann siehst du Beispiele</div>
+    <div class="q-hint">Öffne eine Gruppe um Beispielaromen zu sehen · Mehrfachauswahl möglich</div>`;
+
+  AROMA_KEYS.forEach(key => {
+    const group = AROMEN[key];
+    const examples = group[state.wineType] || group.weiss;
+
+    const ag = document.createElement('div');
+    ag.className = 'aroma-group';
+
+    const isSelected = (state[aromaKey] || []).includes(key);
+    const header = document.createElement('div');
+    header.className = 'aroma-group-header';
+    header.innerHTML = `
+      <span class="aroma-group-name${isSelected ? ' selected' : ''}" id="agname_${context}_${key}">
+        ${group.label} <span style="font-size:9px;color:var(--muted);margin-left:6px">${group.kategorie}</span>
+      </span>
+      <span class="aroma-arrow">▼</span>`;
+    header.onclick = () => ag.classList.toggle('open');
+
+    const examples_div = document.createElement('div');
+    examples_div.className = 'aroma-examples';
+
+    // Select button
+    const selBtn = document.createElement('button');
+    selBtn.style.cssText = `
+      display:inline-block;padding:5px 14px;border:1px solid rgba(107,30,42,0.25);
+      background:transparent;color:var(--muted);font-family:DM Sans,sans-serif;
+      font-size:11px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
+      margin-bottom:10px;border-radius:2px;transition:all 0.15s;`;
+    const isOn = () => (state[aromaKey] || []).includes(key);
+    const updateBtn = () => {
+      selBtn.textContent = isOn() ? '✓ Ausgewählt' : '+ Auswählen';
+      selBtn.style.color = isOn() ? 'var(--wine)' : 'var(--muted)';
+      selBtn.style.borderColor = isOn() ? 'var(--wine)' : 'rgba(107,30,42,0.25)';
+      const nm = document.getElementById(`agname_${context}_${key}`);
+      if (nm) nm.className = 'aroma-group-name' + (isOn() ? ' selected' : '');
+    };
+    selBtn.onclick = (e) => {
+      e.stopPropagation();
+      if (!state[aromaKey]) state[aromaKey] = [];
+      if (isOn()) {
+        state[aromaKey] = state[aromaKey].filter(x => x !== key);
+        if (state[detailKey]) delete state[detailKey][key];
+      } else {
+        state[aromaKey].push(key);
+      }
+      updateBtn();
+    };
+    updateBtn();
+    examples_div.appendChild(selBtn);
+
+    // Examples as chips
+    const exLabel = document.createElement('div');
+    exLabel.className = 'aroma-ex-label';
+    exLabel.textContent = 'Beispielaromen:';
+    examples_div.appendChild(exLabel);
+
+    const exChips = document.createElement('div');
+    exChips.className = 'chips';
+    exChips.style.marginTop = '0';
+
+    examples.forEach((ex, i) => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      const id = `aromex_${context}_${key}_${i}`;
+      const inp = document.createElement('input');
+      inp.type = 'checkbox';
+      inp.id = id;
+      inp.value = ex;
+      if (!state[detailKey]) state[detailKey] = {};
+      inp.checked = (state[detailKey][key] || []).includes(ex);
+      inp.onchange = () => {
+        if (!state[detailKey]) state[detailKey] = {};
+        if (!state[detailKey][key]) state[detailKey][key] = [];
+        if (inp.checked) {
+          state[detailKey][key].push(ex);
+          // Auto-select parent group
+          if (!state[aromaKey]) state[aromaKey] = [];
+          if (!state[aromaKey].includes(key)) {
+            state[aromaKey].push(key);
+            updateBtn();
+          }
+        } else {
+          state[detailKey][key] = state[detailKey][key].filter(x => x !== ex);
+        }
+      };
+      const lbl = document.createElement('label');
+      lbl.htmlFor = id;
+      lbl.textContent = ex;
+      chip.appendChild(inp);
+      chip.appendChild(lbl);
+      exChips.appendChild(chip);
+    });
+    examples_div.appendChild(exChips);
+
+    ag.appendChild(header);
+    ag.appendChild(examples_div);
+    block.appendChild(ag);
+  });
+
+  card.appendChild(block);
+}
+
+// ═══════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════
+function calcTotal() {
+  const vals = [state.scoreB, state.scoreL, state.scoreI, state.scoreK];
+  let sum = 0;
+  vals.forEach(v => { if (v !== '' && v !== undefined) sum += parseFloat(v); });
+  return Math.round(sum * 10) / 10;
+}
+
+function getQuality(score) {
+  if (score >= 3.5) return 'Hervorragend';
+  if (score >= 2.5) return 'Sehr gut';
+  if (score >= 1.5) return 'Gut';
+  if (score >= 0.5) return 'Durchschnittlich';
+  return 'Schwach';
+}
+
+function formatAromen(context) {
+  const aromaKey = context + 'Aromen';
+  const detailKey = context + 'AromenDetails';
+  if (!state[aromaKey] || !state[aromaKey].length) return '';
+
+  return state[aromaKey].map(k => {
+    const group = AROMEN[k];
+    const details = (state[detailKey] && state[detailKey][k]) || [];
+    if (details.length) return `${group.label} (${details.join(', ')})`;
+    return group.label;
+  }).join(' · ');
+}
+
+// ═══════════════════════════════════════════════════════
+//  PDF GENERATION
+// ═══════════════════════════════════════════════════════
+function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+  const W = 210, margin = 18;
+  let y = 20;
+
+  // Colors
+  const wine = [107, 30, 42];
+  const gold = [201, 168, 76];
+  const dark = [26, 18, 8];
+  const muted = [122, 106, 85];
+  const cream = [245, 240, 232];
+
+  // BG
+  doc.setFillColor(...cream);
+  doc.rect(0, 0, W, 297, 'F');
+
+  // Header bar
+  doc.setFillColor(...wine);
+  doc.rect(0, 0, W, 32, 'F');
+
+  doc.setTextColor(245, 240, 232);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(20);
+  doc.text('WEINDEGUSTATION', W / 2, 14, { align: 'center' });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...gold);
+  doc.text('BEURTEILUNGSBLATT · BLIK-SYSTEM', W / 2, 21, { align: 'center' });
+
+  const total = calcTotal();
+  const quality = getQuality(total);
+
+  // Wine name
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.setTextColor(...dark);
+  y = 42;
+  doc.text(state.weinName || 'Unbekannter Wein', margin, y);
+
+  y += 6;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...muted);
+  const subLine = [state.jahrgang, state.rebsorte, state.herkunft].filter(Boolean).join(' · ');
+  if (subLine) doc.text(subLine, margin, y);
+
+  // Gold line
+  y += 5;
+  doc.setDrawColor(...gold);
+  doc.setLineWidth(0.5);
+  doc.line(margin, y, W - margin, y);
+  y += 6;
+
+  // Info row
+  const infos = [];
+  if (state.preis) infos.push(`Preis: CHF ${state.preis}`);
+  if (state.glasNr) infos.push(`Glas Nr. ${state.glasNr}`);
+  if (state.wineType) infos.push(`${state.wineType.charAt(0).toUpperCase()}${state.wineType.slice(1)}`);
+  doc.setFontSize(8.5);
+  doc.setTextColor(...muted);
+  if (infos.length) doc.text(infos.join('  ·  '), margin, y);
+  y += 8;
+
+  // Section helper
+  const section = (title, icon = '') => {
+    doc.setFillColor(...wine);
+    doc.setDrawColor(...wine);
+    doc.roundedRect(margin - 2, y - 4, W - (margin * 2) + 4, 8, 1, 1, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(245, 240, 232);
+    doc.text(`${icon}  ${title}`.trim(), margin + 2, y + 1);
+    y += 10;
+  };
+
+  const row = (label, value) => {
+    if (!value) return;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...muted);
+    doc.text(label + ':', margin + 3, y);
+    doc.setTextColor(...dark);
+    doc.text(String(value), margin + 48, y);
+    y += 5.5;
+  };
+
+  const longRow = (label, value) => {
+    if (!value) return;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...muted);
+    doc.text(label + ':', margin + 3, y);
+    y += 4.5;
+    doc.setTextColor(...dark);
+    const lines = doc.splitTextToSize(value, W - margin * 2 - 6);
+    doc.text(lines, margin + 6, y);
+    y += lines.length * 4.5;
+  };
+
+  // AUGE
+  section('VISUELLE ANALYSE  ·  Das Auge');
+  row('Farbintensität', state.farbIntensitaet);
+  row('Farbton', state.farbton);
+  y += 2;
+
+  // NASE
+  section('GERUCHSANALYSE  ·  Die Nase  ·  BLIK: I & K');
+  row('Intensität', state.nasenIntensitaet);
+  row('Score I', state.scoreI ? `${state.scoreI} / 1` : '');
+  longRow('Aromen', formatAromen('nasen'));
+  row('Score K (Komplexität)', state.scoreK ? `${state.scoreK} / 1` : '');
+  y += 2;
+
+  // GAUMEN
+  section('GESCHMACKSPROBE  ·  Der Gaumen  ·  BLIK: B & L');
+  row('Süsse', state.suesseGaumen);
+  row(state.wineType === 'rot' ? 'Tannine' : 'Säure', state.strukturGaumen);
+  row('Körper', state.koerper);
+  row('Balance', state.balance);
+  row('Score B', state.scoreB ? `${state.scoreB} / 1` : '');
+  longRow('Aromen', formatAromen('gaumen'));
+  row('Abgang', state.abgang);
+  row('Score L', state.scoreL ? `${state.scoreL} / 1` : '');
+  y += 2;
+
+  // BLIK Gesamtwertung
+  section('GESAMTURTEIL  ·  BLIK-System');
+  y += 2;
+
+  // BLIK boxes
+  const boxW = (W - margin * 2 - 9) / 4;
+  const boxH = 18;
+  [['B','Balance', state.scoreB],['L','Länge',state.scoreL],['I','Intensität',state.scoreI],['K','Komplexität',state.scoreK]].forEach((item, i) => {
+    const bx = margin + i * (boxW + 3);
+    doc.setFillColor(255, 252, 245);
+    doc.setDrawColor(...gold);
+    doc.setLineWidth(0.4);
+    doc.roundedRect(bx, y, boxW, boxH, 1, 1, 'FD');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.setTextColor(...wine);
+    doc.text(item[0], bx + boxW / 2, y + 7, { align: 'center' });
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...muted);
+    doc.text(item[1], bx + boxW / 2, y + 11.5, { align: 'center' });
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...dark);
+    doc.text(item[2] !== undefined && item[2] !== '' ? String(item[2]) : '–', bx + boxW / 2, y + 16.5, { align: 'center' });
+  });
+  y += boxH + 6;
+
+  // Total box
+  const tbW = 60;
+  const tbX = W / 2 - tbW / 2;
+  doc.setFillColor(...wine);
+  doc.roundedRect(tbX, y, tbW, 22, 2, 2, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(22);
+  doc.setTextColor(...cream);
+  doc.text(`${total} / 4`, W / 2, y + 12, { align: 'center' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...gold);
+  doc.text('BLIK GESAMTSCORE', W / 2, y + 17, { align: 'center' });
+  y += 28;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(...wine);
+  doc.text(`Qualität: ${quality}`, W / 2, y, { align: 'center' });
+  y += 8;
+
+  // Footer
+  doc.setDrawColor(...gold);
+  doc.setLineWidth(0.3);
+  doc.line(margin, 285, W - margin, 285);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7);
+  doc.setTextColor(...muted);
+  const d = new Date();
+  doc.text(`Erstellt am ${d.toLocaleDateString('de-CH')} · BLIK-System · Académie du Vin`, W / 2, 290, { align: 'center' });
+
+  const filename = `Degustation_${(state.weinName || 'Wein').replace(/\s+/g, '_')}_${state.jahrgang || new Date().getFullYear()}.pdf`;
+  doc.save(filename);
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
