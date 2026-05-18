@@ -3,1407 +3,1021 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Wein-Assistent">
 <title>Tom's interaktiver Wein-Assistent</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap');
 
 :root {
   --bg: #F7F3EC;
-  --bg2: #F0EBE1;
-  --bg3: #EDE6D8;
   --surface: #FFFFFF;
-  --surface2: #F7F3EC;
+  --surface2: #F0EBE1;
   --border: rgba(28,20,16,0.1);
-  --border-active: rgba(184,146,74,0.5);
   --gold: #9A6E1A;
-  --gold-dim: rgba(154,110,26,0.12);
-  --gold-glow: rgba(154,110,26,0.06);
+  --gold-dim: rgba(154,110,26,0.1);
+  --gold-border: rgba(154,110,26,0.35);
   --text: #1C1410;
-  --text-dim: rgba(28,20,16,0.55);
-  --text-muted: rgba(28,20,16,0.35);
-
+  --text-dim: rgba(28,20,16,0.5);
+  --text-muted: rgba(28,20,16,0.3);
   --rot: #A0283E;
-  --rot-dim: rgba(160,40,62,0.12);
-  --rot-bg: rgba(160,40,62,0.06);
+  --rot-bg: rgba(160,40,62,0.07);
   --weiss: #3A7A3C;
-  --weiss-dim: rgba(58,122,60,0.12);
-  --weiss-bg: rgba(58,122,60,0.06);
+  --weiss-bg: rgba(58,122,60,0.07);
   --rose: #B84060;
-  --rose-dim: rgba(184,64,96,0.12);
-  --rose-bg: rgba(184,64,96,0.06);
-
-  --included: #2E7D34;
-  --excluded: #A83030;
-  --neutral: rgba(28,20,16,0.3);
-
-  --radius: 10px;
-  --radius-sm: 6px;
+  --rose-bg: rgba(184,64,96,0.07);
+  --green: #2E7D34;
+  --green-bg: rgba(46,125,52,0.08);
+  --green-border: rgba(46,125,52,0.3);
+  --radius: 12px;
+  --radius-sm: 8px;
 }
 
-* { margin:0; padding:0; box-sizing:border-box; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
   font-family: 'DM Sans', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* Grain overlay */
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 1000;
-  opacity: 0.15;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 /* ── HEADER ── */
-header {
-  padding: 1.5rem 1.5rem 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.header-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.5rem;
-  font-weight: 300;
-  letter-spacing: 0.03em;
-  color: var(--text);
-  line-height: 1.1;
-}
-.header-title span {
-  display: block;
-  font-size: 0.65rem;
-  font-family: 'DM Mono', monospace;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 0.25rem;
-}
-
-/* ── WINE TYPE TABS ── */
-.type-tabs {
-  display: flex;
-  gap: 0.5rem;
-  padding: 1.2rem 1.5rem 0;
-}
-.type-tab {
-  flex: 1;
-  padding: 0.65rem 0.5rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
+.app-header {
   background: var(--surface);
-  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 1.25rem 0.85rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.app-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.app-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.app-title small {
+  display: block;
   font-family: 'DM Mono', monospace;
-  font-size: 0.65rem;
+  font-size: 0.58rem;
+  font-weight: 300;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.1rem;
+}
+.reset-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 0.3rem 0.75rem;
   cursor: pointer;
-  transition: all 0.2s;
+}
+.reset-btn:active { background: var(--surface2); }
+
+/* ── TYPE TABS ── */
+.type-tabs { display: flex; gap: 0.4rem; }
+.type-tab {
+  flex: 1;
+  padding: 0.5rem 0.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text-dim);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
   text-align: center;
+  display: flex; align-items: center; justify-content: center; gap: 0.35rem;
+}
+.type-tab:active { opacity: 0.7; }
+.type-tab.active-rot    { background: var(--rot-bg);  border-color: var(--rot);  color: var(--rot);  font-weight: 500; }
+.type-tab.active-weiss  { background: var(--weiss-bg); border-color: var(--weiss); color: var(--weiss); font-weight: 500; }
+.type-tab.active-rose   { background: var(--rose-bg); border-color: var(--rose); color: var(--rose); font-weight: 500; }
+.type-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── STEP NAV ── */
+.step-nav {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
+  padding: 0.7rem 1.25rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
 }
-.type-tab:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
-.type-tab.active-rot { background: var(--rot-bg); border-color: var(--rot); color: var(--rot); }
-.type-tab.active-weiss { background: var(--weiss-bg); border-color: var(--weiss); color: var(--weiss); }
-.type-tab.active-rose { background: var(--rose-bg); border-color: var(--rose); color: var(--rose); }
-.type-dot { width: 7px; height: 7px; border-radius: 50%; }
-
-/* ── MAIN LAYOUT ── */
-.app {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 1rem;
-  padding: 1rem 1.5rem 2rem;
-  min-height: calc(100vh - 120px);
-}
-@media (max-width: 700px) {
-  .app { grid-template-columns: 1fr; }
-  .candidates-panel { order: -1; }
-}
-
-/* ── LEFT: CLUE STEPS ── */
-.steps-panel {}
-
-.step-section {
-  margin-bottom: 0.75rem;
-  border-radius: var(--radius);
-  overflow: hidden;
+.step-nav::-webkit-scrollbar { display: none; }
+.step-nav-item {
+  display: flex; align-items: center; gap: 0.3rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 20px;
   border: 1px solid var(--border);
   background: var(--surface);
-}
-.step-header {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.8rem 1rem;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  white-space: nowrap;
   cursor: pointer;
-  user-select: none;
-  transition: background 0.15s;
+  flex-shrink: 0;
 }
-.step-header:hover { background: rgba(255,255,255,0.03); }
-.step-num {
-  width: 22px; height: 22px;
+.step-nav-item:active { opacity: 0.7; }
+.step-nav-item.active    { background: var(--gold-dim); border-color: var(--gold-border); color: var(--gold); font-weight: 500; }
+.step-nav-item.completed { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
+.step-nav-num {
+  width: 15px; height: 15px;
   border-radius: 50%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
+  background: currentColor;
   display: flex; align-items: center; justify-content: center;
   font-family: 'DM Mono', monospace;
-  font-size: 0.6rem;
-  color: var(--gold);
+  font-size: 0.5rem;
+  color: white;
   flex-shrink: 0;
+  opacity: 0.85;
+}
+
+/* ── MAIN ── */
+main { padding: 1.1rem 1.25rem; }
+
+/* ── STEP ── */
+.step-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.2rem;
 }
 .step-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.05rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  flex: 1;
+  line-height: 1.1;
+  margin-bottom: 0.2rem;
 }
-.step-subtitle {
-  font-size: 0.62rem;
-  color: var(--text-muted);
-  font-family: 'DM Mono', monospace;
-  letter-spacing: 0.08em;
+.step-hint {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
 }
-.step-selected-count {
-  font-size: 0.6rem;
-  font-family: 'DM Mono', monospace;
-  background: var(--gold-dim);
-  color: var(--gold);
-  border-radius: 20px;
-  padding: 0.15rem 0.5rem;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.step-selected-count.visible { opacity: 1; }
-.step-chevron {
-  color: var(--text-muted);
-  font-size: 0.7rem;
-  transition: transform 0.2s;
-  flex-shrink: 0;
-}
-.step-section.open .step-chevron { transform: rotate(180deg); }
 
-.step-body {
-  display: none;
-  padding: 0 0.75rem 0.75rem;
-  border-top: 1px solid var(--border);
+/* ── COLOR CHIPS ── */
+.color-chips { display: flex; flex-direction: column; gap: 0.45rem; }
+.color-chip {
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  user-select: none;
 }
-.step-section.open .step-body { display: block; }
+.color-chip:active { transform: scale(0.98); }
+.color-chip.selected { border-color: var(--gold-border); background: var(--gold-dim); }
+.swatch-circle { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 1px 5px rgba(0,0,0,0.2); }
+.color-chip-label { font-size: 0.82rem; color: var(--text); font-weight: 500; line-height: 1.2; }
+.color-chip-hint  { font-size: 0.63rem; color: var(--text-muted); font-family: 'DM Mono', monospace; margin-top: 0.1rem; }
+.color-chip.selected .color-chip-label { color: var(--gold); }
+.chip-check {
+  margin-left: auto;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+  flex-shrink: 0;
+  color: transparent;
+}
+.color-chip.selected .chip-check { background: var(--gold); border-color: var(--gold); color: white; }
 
 /* ── CLUE CHIPS ── */
-.clue-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  padding-top: 0.75rem;
-}
+.clue-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
 .chip {
-  padding: 0.4rem 0.8rem;
+  padding: 0.5rem 0.85rem;
   border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
   color: var(--text-dim);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   cursor: pointer;
-  transition: all 0.18s;
   user-select: none;
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
   line-height: 1.2;
 }
-.chip:hover {
-  border-color: rgba(255,255,255,0.2);
-  color: var(--text);
-  background: var(--surface2);
-}
-.chip.selected {
-  background: var(--gold-dim);
-  border-color: var(--gold);
-  color: var(--gold);
-}
-.chip.selected::before { content: '✓ '; font-size: 0.65rem; }
+.chip:active { transform: scale(0.96); }
+.chip.selected { background: var(--gold-dim); border-color: var(--gold-border); color: var(--gold); font-weight: 500; }
+.chip.selected::before { content: '✓ '; }
 
-/* Color swatches as chips */
-.color-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; padding-top: 0.75rem; }
-.color-chip {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.5rem 0.9rem 0.5rem 0.6rem;
-  border-radius: 24px;
-  border: 1px solid var(--border);
-  background: var(--bg3);
-  cursor: pointer;
-  transition: all 0.18s;
-  user-select: none;
+/* ── FOOTER NAV ── */
+.step-footer {
+  display: flex; gap: 0.6rem;
+  margin-top: 1.5rem;
+  padding-bottom: 2rem;
 }
-.color-chip:hover { border-color: rgba(255,255,255,0.2); background: var(--surface2); }
-.color-chip.selected { border-color: var(--gold); background: var(--gold-dim); }
-.swatch-circle { width: 18px; height: 18px; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.4); flex-shrink: 0; }
-.color-chip-label { font-size: 0.73rem; color: var(--text-dim); transition: color 0.18s; }
-.color-chip:hover .color-chip-label,
-.color-chip.selected .color-chip-label { color: var(--text); }
-
-/* Reset button */
-.reset-btn {
-  margin-top: 1rem;
-  padding: 0.55rem 1.2rem;
+.btn-back {
+  padding: 0.75rem 1.1rem;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-muted);
-  font-family: 'DM Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.reset-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
-
-/* ── RIGHT: CANDIDATES PANEL ── */
-.candidates-panel {
-  position: sticky;
-  top: 1rem;
-  height: fit-content;
-}
-
-.panel-box {
+  border: 1.5px solid var(--border);
   background: var(--surface);
-  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.btn-back:active { background: var(--surface2); }
+.btn-next {
+  flex: 1;
+  padding: 0.75rem 1.1rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--text);
+  color: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.btn-next:active { opacity: 0.8; }
+.btn-next.gold { background: var(--gold); color: white; }
+
+/* ── RESULTS ── */
+.results-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+.results-sub { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1.1rem; }
+
+.hypothesis-card {
+  background: var(--surface);
+  border: 1.5px solid var(--gold-border);
   border-radius: var(--radius);
-  overflow: hidden;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
 }
-.panel-head {
-  padding: 0.8rem 1rem;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.panel-head-title {
+.hypo-label {
   font-family: 'DM Mono', monospace;
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--gold);
+  margin-bottom: 0.65rem;
 }
-.candidate-count {
+.hypo-entry {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.hypo-entry:last-child { border-bottom: none; }
+.hypo-rank { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--text-muted); width: 16px; flex-shrink: 0; }
+.hypo-rank.first { color: var(--gold); font-weight: 500; }
+.hypo-medal { font-size: 1rem; flex-shrink: 0; }
+.hypo-grape { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 600; flex: 1; }
+.hypo-grape.first { color: var(--gold); }
+.hypo-score { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--text-muted); background: var(--surface2); padding: 0.15rem 0.45rem; border-radius: 10px; }
+.score-row { margin-top: 0.25rem; height: 3px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+.score-fill { height: 100%; border-radius: 2px; background: var(--gold); transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+
+.candidates-section { margin-top: 1.1rem; }
+.section-label {
   font-family: 'DM Mono', monospace;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--text-muted);
-  transition: all 0.3s;
+  margin-bottom: 0.55rem;
 }
-.candidate-count.urgent { color: var(--gold); }
-
-.candidates-list {
-  padding: 0.5rem;
-  max-height: 70vh;
-  overflow-y: auto;
-}
-.candidates-list::-webkit-scrollbar { width: 3px; }
-.candidates-list::-webkit-scrollbar-track { background: transparent; }
-.candidates-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-.candidate-item {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.5rem 0.6rem;
+.candidate-row {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
   border-radius: var(--radius-sm);
   margin-bottom: 0.3rem;
-  transition: all 0.3s;
-  border: 1px solid transparent;
+  border: 1px solid var(--border);
+  background: var(--surface);
 }
-.candidate-item.included {
-  background: rgba(90,175,99,0.08);
-  border-color: rgba(90,175,99,0.2);
-}
-.candidate-item.excluded {
-  opacity: 0.25;
-  filter: grayscale(1);
-}
-.candidate-item.top-match {
-  background: rgba(196,150,60,0.1);
-  border-color: rgba(196,150,60,0.3);
-}
+.candidate-row.top      { border-color: var(--gold-border); background: var(--gold-dim); }
+.candidate-row.included { border-color: var(--green-border); background: var(--green-bg); }
+.candidate-row.excluded { opacity: 0.28; filter: grayscale(1); }
+.cand-icon { font-size: 0.8rem; width: 18px; text-align: center; flex-shrink: 0; }
+.cand-name { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 600; }
+.cand-region { font-size: 0.62rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+.cand-score { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--text-muted); margin-left: auto; white-space: nowrap; }
 
-.candidate-score-bar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+/* ── LIVE TOP-3 BAR ── */
+.live-bar {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1.25rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.live-bar::-webkit-scrollbar { display: none; }
+.live-bar-label {
   font-family: 'DM Mono', monospace;
-  font-size: 0.6rem;
-  font-weight: 400;
-  flex-shrink: 0;
-  border: 1px solid var(--border);
-  background: var(--bg3);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--text-muted);
-  transition: all 0.3s;
+  flex-shrink: 0;
 }
-.candidate-item.included .candidate-score-bar {
-  background: rgba(90,175,99,0.15);
-  border-color: rgba(90,175,99,0.4);
-  color: var(--included);
+.live-bar-candidates {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
 }
-.candidate-item.top-match .candidate-score-bar {
-  background: rgba(196,150,60,0.2);
-  border-color: var(--gold);
-  color: var(--gold);
-  font-size: 0.8rem;
+.live-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  white-space: nowrap;
+  transition: all 0.25s;
 }
-
-.candidate-info {}
-.candidate-name {
+.live-pill.rank-1 {
+  border-color: var(--gold-border);
+  background: var(--gold-dim);
+}
+.live-pill-medal { font-size: 0.75rem; }
+.live-pill-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: var(--text);
-  line-height: 1.1;
-  transition: color 0.3s;
 }
-.candidate-item.excluded .candidate-name { color: var(--text-muted); }
-.candidate-regions {
-  font-size: 0.62rem;
-  color: var(--text-muted);
-  margin-top: 0.1rem;
+.live-pill.rank-1 .live-pill-name { color: var(--gold); }
+.live-pill-score {
   font-family: 'DM Mono', monospace;
-  line-height: 1.3;
+  font-size: 0.58rem;
+  color: var(--text-muted);
 }
-.candidate-item.included .candidate-regions { color: rgba(90,175,99,0.6); }
-.candidate-item.top-match .candidate-regions { color: rgba(196,150,60,0.6); }
+.live-bar-empty {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
 
-/* Score bar visual */
-.score-track {
-  margin-top: 0.2rem;
-  height: 2px;
-  background: var(--bg3);
-  border-radius: 1px;
-  overflow: hidden;
-}
-.score-fill {
-  height: 100%;
-  border-radius: 1px;
-  background: var(--text-muted);
-  transition: width 0.4s cubic-bezier(0.4,0,0.2,1), background 0.3s;
-}
-.candidate-item.included .score-fill { background: var(--included); }
-.candidate-item.top-match .score-fill { background: var(--gold); }
 
-/* Hypothesis box */
-.hypothesis-box {
-  margin-top: 0.75rem;
-  padding: 0.9rem 1rem;
+.selected-summary {
+  margin-top: 1.1rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  transition: all 0.3s;
+  padding: 0.9rem 1rem;
 }
-.hypothesis-box.active {
-  border-color: var(--gold);
-  background: rgba(196,150,60,0.06);
+.summary-section { margin-bottom: 0.8rem; }
+.summary-section:last-child { margin-bottom: 0; }
+.summary-section-name {
+  font-size: 0.68rem; font-weight: 500; color: var(--text-dim);
+  margin-bottom: 0.35rem;
+  display: flex; align-items: center; gap: 0.4rem;
 }
-.hypothesis-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 0.5rem;
-}
-.hypothesis-empty {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  font-style: italic;
-}
-.hypothesis-top {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-.hypothesis-entry {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.hypothesis-rank {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem;
-  color: var(--text-muted);
-  width: 14px;
-  flex-shrink: 0;
-}
-.hypothesis-rank.first { color: var(--gold); }
-.hypothesis-grape {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1rem;
-  font-weight: 600;
-}
-.hypothesis-grape.first { color: var(--gold); }
-.hypothesis-hint {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  margin-left: auto;
-  font-family: 'DM Mono', monospace;
-}
-
-/* Selected clues summary */
-.selected-clues {
-  margin-top: 0.75rem;
-}
-.selected-clues-head {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 0.4rem;
-}
-.selected-clue-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.65rem;
+.summary-section-name::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.summary-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.summary-tag {
+  font-size: 0.72rem;
   background: var(--gold-dim);
   color: var(--gold);
-  border-radius: 3px;
-  padding: 0.15rem 0.4rem;
-  margin: 0.15rem 0.15rem 0 0;
+  border: 1px solid var(--gold-border);
+  border-radius: 20px;
+  padding: 0.25rem 0.6rem;
+  display: flex; align-items: center; gap: 0.3rem;
   cursor: pointer;
-  transition: opacity 0.2s;
 }
-.selected-clue-tag:hover { opacity: 0.7; }
-.selected-clue-tag .remove { font-size: 0.6rem; color: rgba(196,150,60,0.5); }
-
-/* ── ANIMATIONS ── */
-@keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.candidate-item { animation: fadeSlideIn 0.25s ease; }
-
-/* No selection state hint */
-.no-selection-hint {
-  padding: 1.5rem 1rem;
-  text-align: center;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  font-style: italic;
-  line-height: 1.6;
-}
+.summary-tag:active { opacity: 0.6; }
+.remove-x { font-size: 0.6rem; opacity: 0.5; }
+.summary-empty { font-size: 0.73rem; color: var(--text-muted); font-style: italic; }
+.empty-results { text-align: center; padding: 2rem 1rem; font-size: 0.8rem; color: var(--text-muted); line-height: 1.7; }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-title">
-    <span>Blinddegustation</span>
-    Tom's interaktiver Wein-Assistent
+<div class="app-header">
+  <div class="app-header-top">
+    <div class="app-title">
+      <small>Blinddegustation</small>
+      Tom's Wein-Assistent
+    </div>
+    <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
   </div>
-</header>
-
-<div class="type-tabs">
-  <button class="type-tab active-rot" id="tab-rot" onclick="setWineType('rot')">
-    <span class="type-dot" style="background:#C4546B"></span> Rotwein
-  </button>
-  <button class="type-tab" id="tab-weiss" onclick="setWineType('weiss')">
-    <span class="type-dot" style="background:#7EB87F"></span> Weisswein
-  </button>
-  <button class="type-tab" id="tab-rose" onclick="setWineType('rose')">
-    <span class="type-dot" style="background:#E0899A"></span> Rosé
-  </button>
-</div>
-
-<div class="app">
-  <div class="steps-panel" id="steps-panel">
-    <!-- Generated by JS -->
-  </div>
-
-  <div class="candidates-panel">
-    <div class="panel-box">
-      <div class="panel-head">
-        <span class="panel-head-title">Kandidaten</span>
-        <span class="candidate-count" id="candidate-count">— / —</span>
-      </div>
-      <div class="candidates-list" id="candidates-list">
-        <div class="no-selection-hint">Tippe auf Merkmale links,<br>um die Kandidaten einzugrenzen.</div>
-      </div>
-    </div>
-
-    <div class="hypothesis-box" id="hypothesis-box">
-      <div class="hypothesis-label">Meine Hypothese</div>
-      <div class="hypothesis-empty" id="hypothesis-empty">Noch keine Merkmale gewählt.</div>
-      <div class="hypothesis-top" id="hypothesis-top" style="display:none"></div>
-    </div>
-
-    <div class="selected-clues" id="selected-clues-panel" style="display:none">
-      <div class="selected-clues-head">Gewählte Merkmale</div>
-      <div id="selected-clues-tags"></div>
-    </div>
-
-    <button class="reset-btn" onclick="resetAll()">
-      ↺ Alles zurücksetzen
+  <div class="type-tabs">
+    <button class="type-tab active-rot" id="tab-rot" onclick="setWineType('rot')">
+      <span class="type-dot" style="background:#A0283E"></span>Rotwein
+    </button>
+    <button class="type-tab" id="tab-weiss" onclick="setWineType('weiss')">
+      <span class="type-dot" style="background:#3A7A3C"></span>Weisswein
+    </button>
+    <button class="type-tab" id="tab-rose" onclick="setWineType('rose')">
+      <span class="type-dot" style="background:#B84060"></span>Rosé
     </button>
   </div>
 </div>
 
+<div class="step-nav" id="step-nav"></div>
+<div class="live-bar" id="live-bar" style="display:none">
+  <span class="live-bar-label">Top 3</span>
+  <div class="live-bar-candidates" id="live-bar-candidates"></div>
+</div>
+<main id="main-content"></main>
+
 <script>
-// ══════════════════════════════════════════════════════
-// DATA
-// ══════════════════════════════════════════════════════
+// ═══════════════════ DATA ═══════════════════
 
 const WINES = {
   rot: [
-    {
-      id: 'cab_sauv',
-      name: 'Cabernet Sauvignon',
-      regions: 'Bordeaux · Napa · Chile · Australien',
-      clues: {
-        // color
-        color_dark: 3, color_granat: 2, color_opaque: 3,
-        // rim
-        rim_jung: 1, rim_purple: 1,
-        // viskos
-        visk_thick: 1,
-        // nose fruit
-        nose_dark_fruit: 3, nose_cassis: 3, nose_pflaume: 2,
-        nose_red_fruit: -2,
-        // nose character
-        nose_paprika: 3, nose_zeder: 3, nose_tabak: 2,
-        nose_pepper: 1, nose_garrigue: -1,
-        // nose maturation
-        nose_leder: 2, nose_teer: -1,
-        // palate
-        palate_tannin_high: 3, palate_acid_med: 1,
-        palate_body_full: 2, palate_alc_high: 1,
-        // negatives
-        palate_tannin_none: -3, palate_tannin_silk: -1,
-      }
-    },
-    {
-      id: 'merlot',
-      name: 'Merlot',
-      regions: 'Pomerol · St-Emilion · Toskana',
-      clues: {
-        color_granat: 2, color_ruby: 2, color_opaque: 1,
-        rim_jung: 1,
-        nose_dark_fruit: 2, nose_pflaume: 3, nose_cassis: 1,
-        nose_schoko: 2, nose_veilchen: 2,
-        palate_tannin_silk: 3, palate_acid_med: 1,
-        palate_body_med: 2, palate_body_full: 1,
-        palate_tannin_high: -2,
-        palate_alc_high: -1,
-      }
-    },
-    {
-      id: 'pinot_noir',
-      name: 'Pinot Noir',
-      regions: 'Burgund · Oregon · Neuseeland · Baden',
-      clues: {
-        color_light_ruby: 3, color_transparent: 3,
-        rim_jung: 1, visk_thin: 2,
-        nose_red_fruit: 3, nose_kirsche: 3, nose_erdbeere: 2,
-        nose_pilze: 2, nose_erde: 2, nose_rosen: 2,
-        palate_tannin_silk: 2, palate_tannin_none: 1,
-        palate_acid_high: 2, palate_body_light: 3,
-        palate_alc_high: -2, palate_tannin_high: -3,
-        color_opaque: -3, color_dark: -3,
-      }
-    },
-    {
-      id: 'syrah',
-      name: 'Syrah / Shiraz',
-      regions: 'Rhône · Barossa · Languedoc',
-      clues: {
-        color_dark: 3, color_violet: 3, color_opaque: 2,
-        rim_purple: 2,
-        nose_dark_fruit: 2, nose_brombeere: 2,
-        nose_pepper: 3, nose_lakritz: 3, nose_eukalyptus: 2,
-        nose_leder: 2, nose_schoko: 1,
-        palate_tannin_high: 2, palate_acid_med: 1,
-        palate_body_full: 2,
-        color_transparent: -2, palate_tannin_none: -2,
-      }
-    },
-    {
-      id: 'grenache',
-      name: 'Grenache / Garnacha',
-      regions: 'Châteauneuf · Priorat · Navarra',
-      clues: {
-        color_light_ruby: 2, color_transparent: 2,
-        rim_jung: 1,
-        nose_red_fruit: 3, nose_erdbeere: 2, nose_kirsche: 1,
-        nose_garrigue: 3, nose_pepper_white: 2,
-        palate_tannin_none: 2, palate_tannin_silk: 1,
-        palate_acid_low: 2, palate_body_med: 2,
-        palate_alc_high: 1,
-        palate_tannin_high: -3, color_opaque: -2,
-      }
-    },
-    {
-      id: 'tempranillo',
-      name: 'Tempranillo',
-      regions: 'Rioja · Ribera del Duero · Toro',
-      clues: {
-        color_ruby: 2, color_granat: 2,
-        rim_orange: 1,
-        nose_dark_fruit: 1, nose_kirsche: 2,
-        nose_leder: 2, nose_tabak: 2, nose_vanille: 2,
-        nose_zeder: 1,
-        palate_tannin_med: 2, palate_acid_med: 1,
-        palate_body_med: 2,
-      }
-    },
-    {
-      id: 'sangiovese',
-      name: 'Sangiovese',
-      regions: 'Chianti · Brunello · Morellino',
-      clues: {
-        color_ruby: 2, color_granat: 1,
-        nose_red_fruit: 2, nose_kirsche: 3, nose_sauerkirsche: 3,
-        nose_balsamico: 3, nose_erde: 2, nose_tabak: 1,
-        palate_tannin_high: 2, palate_acid_high: 3,
-        palate_body_med: 2,
-        palate_acid_low: -3,
-      }
-    },
-    {
-      id: 'nebbiolo',
-      name: 'Nebbiolo',
-      regions: 'Barolo · Barbaresco · Gattinara',
-      clues: {
-        color_light_ruby: 2, color_transparent: 1,
-        rim_orange: 2,
-        nose_rosen: 3, nose_teer: 3, nose_tabak: 2,
-        nose_sauerkirsche: 2, nose_pilze: 1,
-        palate_tannin_high: 3, palate_acid_high: 3,
-        palate_body_med: 1,
-        palate_tannin_none: -3, palate_acid_low: -3,
-        color_opaque: -2,
-      }
-    },
-    {
-      id: 'malbec',
-      name: 'Malbec',
-      regions: 'Mendoza · Cahors · Patagonien',
-      clues: {
-        color_dark: 3, color_violet: 3, color_opaque: 3,
-        rim_purple: 3, visk_thick: 2,
-        nose_dark_fruit: 2, nose_brombeere: 2, nose_pflaume: 2,
-        nose_veilchen: 3, nose_eukalyptus: 2, nose_schoko: 2,
-        palate_tannin_high: 2, palate_tannin_silk: 1,
-        palate_acid_med: 1, palate_body_full: 3, palate_alc_high: 2,
-        color_transparent: -3,
-      }
-    },
-    {
-      id: 'primitivo',
-      name: 'Primitivo / Zinfandel',
-      regions: 'Primitivo di Manduria · Zinfandel California',
-      clues: {
-        color_dark: 2, color_violet: 2, color_opaque: 2,
-        rim_purple: 2, visk_thick: 3,
-        nose_dark_fruit: 3, nose_feige: 3, nose_rosine: 2,
-        nose_brombeere: 2, nose_gewuerze: 2,
-        palate_acid_low: 2, palate_body_full: 3,
-        palate_alc_high: 3, palate_restsüsse: 2,
-        palate_tannin_high: -1,
-      }
-    },
-    {
-      id: 'gamay',
-      name: 'Gamay',
-      regions: 'Beaujolais · Beaujolais Villages · Loire',
-      clues: {
-        color_light_ruby: 3, color_transparent: 2,
-        visk_thin: 2,
-        nose_red_fruit: 3, nose_kirsche: 3, nose_erdbeere: 2,
-        nose_blumen: 2,
-        palate_tannin_none: 2, palate_acid_high: 2,
-        palate_body_light: 3,
-        palate_tannin_high: -3, color_opaque: -2,
-      }
-    },
-    {
-      id: 'cab_franc',
-      name: 'Cabernet Franc',
-      regions: 'Chinon · Loire · St-Emilion · Bolgheri',
-      clues: {
-        color_light_ruby: 2, color_ruby: 1,
-        nose_red_fruit: 2, nose_kirsche: 2,
-        nose_paprika: 2, nose_veilchen: 2,
-        palate_tannin_med: 2, palate_acid_high: 2,
-        palate_body_light: 2,
-        color_opaque: -2, palate_tannin_high: -1,
-      }
-    },
+    { id:'cab_sauv', name:'Cabernet Sauvignon', regions:'Bordeaux · Napa · Chile',
+      clues:{ color_dark:3,color_granat:2,color_opaque:3,rim_jung:1,rim_purple:1,visk_thick:1,
+        nose_dark_fruit:3,nose_cassis:3,nose_pflaume:2,nose_red_fruit:-2,
+        nose_paprika:3,nose_zeder:3,nose_tabak:2,nose_pepper:1,nose_garrigue:-1,
+        nose_leder:2,nose_teer:-1,
+        palate_tannin_high:3,palate_acid_med:1,palate_body_full:2,palate_alc_high:1,
+        palate_tannin_none:-3,palate_tannin_silk:-1 }},
+    { id:'merlot', name:'Merlot', regions:'Pomerol · St-Emilion · Toskana',
+      clues:{ color_granat:2,color_ruby:2,color_opaque:1,rim_jung:1,
+        nose_dark_fruit:2,nose_pflaume:3,nose_cassis:1,nose_schoko:2,nose_veilchen:2,
+        palate_tannin_silk:3,palate_acid_med:1,palate_body_med:2,palate_body_full:1,
+        palate_tannin_high:-2,palate_alc_high:-1 }},
+    { id:'pinot_noir', name:'Pinot Noir', regions:'Burgund · Oregon · Neuseeland',
+      clues:{ color_light_ruby:3,color_transparent:3,visk_thin:2,
+        nose_red_fruit:3,nose_kirsche:3,nose_erdbeere:2,nose_pilze:2,nose_erde:2,nose_rosen:2,
+        palate_tannin_silk:2,palate_tannin_none:1,palate_acid_high:2,palate_body_light:3,
+        palate_alc_high:-2,palate_tannin_high:-3,color_opaque:-3,color_dark:-3 }},
+    { id:'syrah', name:'Syrah / Shiraz', regions:'Rhône · Barossa · Languedoc',
+      clues:{ color_dark:3,color_violet:3,color_opaque:2,rim_purple:2,
+        nose_dark_fruit:2,nose_brombeere:2,nose_pepper:3,nose_lakritz:3,nose_eukalyptus:2,
+        nose_leder:2,nose_schoko:1,
+        palate_tannin_high:2,palate_acid_med:1,palate_body_full:2,
+        color_transparent:-2,palate_tannin_none:-2 }},
+    { id:'grenache', name:'Grenache / Garnacha', regions:'Châteauneuf · Priorat · Navarra',
+      clues:{ color_light_ruby:2,color_transparent:2,
+        nose_red_fruit:3,nose_erdbeere:2,nose_kirsche:1,nose_garrigue:3,nose_pepper_white:2,
+        palate_tannin_none:2,palate_tannin_silk:1,palate_acid_low:2,palate_body_med:2,palate_alc_high:1,
+        palate_tannin_high:-3,color_opaque:-2 }},
+    { id:'tempranillo', name:'Tempranillo', regions:'Rioja · Ribera del Duero · Toro',
+      clues:{ color_ruby:2,color_granat:2,rim_orange:1,
+        nose_dark_fruit:1,nose_kirsche:2,nose_leder:2,nose_tabak:2,nose_vanille:2,nose_zeder:1,
+        palate_tannin_med:2,palate_acid_med:1,palate_body_med:2 }},
+    { id:'sangiovese', name:'Sangiovese', regions:'Chianti · Brunello · Toskana',
+      clues:{ color_ruby:2,color_granat:1,
+        nose_red_fruit:2,nose_kirsche:3,nose_sauerkirsche:3,nose_balsamico:3,nose_erde:2,nose_tabak:1,
+        palate_tannin_high:2,palate_acid_high:3,palate_body_med:2,
+        palate_acid_low:-3 }},
+    { id:'nebbiolo', name:'Nebbiolo', regions:'Barolo · Barbaresco · Gattinara',
+      clues:{ color_light_ruby:2,color_transparent:1,rim_orange:2,
+        nose_rosen:3,nose_teer:3,nose_tabak:2,nose_sauerkirsche:2,nose_pilze:1,
+        palate_tannin_high:3,palate_acid_high:3,palate_body_med:1,
+        palate_tannin_none:-3,palate_acid_low:-3,color_opaque:-2 }},
+    { id:'malbec', name:'Malbec', regions:'Mendoza · Cahors · Patagonien',
+      clues:{ color_dark:3,color_violet:3,color_opaque:3,rim_purple:3,visk_thick:2,
+        nose_dark_fruit:2,nose_brombeere:2,nose_pflaume:2,nose_veilchen:3,nose_eukalyptus:2,nose_schoko:2,
+        palate_tannin_high:2,palate_tannin_silk:1,palate_acid_med:1,palate_body_full:3,palate_alc_high:2,
+        color_transparent:-3 }},
+    { id:'primitivo', name:'Primitivo / Zinfandel', regions:'Apulien · Californien',
+      clues:{ color_dark:2,color_violet:2,color_opaque:2,rim_purple:2,visk_thick:3,
+        nose_dark_fruit:3,nose_feige:3,nose_rosine:2,nose_brombeere:2,nose_gewuerze:2,
+        palate_acid_low:2,palate_body_full:3,palate_alc_high:3,palate_restsüsse:2,
+        palate_tannin_high:-1 }},
+    { id:'gamay', name:'Gamay', regions:'Beaujolais · Loire',
+      clues:{ color_light_ruby:3,color_transparent:2,visk_thin:2,
+        nose_red_fruit:3,nose_kirsche:3,nose_erdbeere:2,nose_blumen:2,
+        palate_tannin_none:2,palate_acid_high:2,palate_body_light:3,
+        palate_tannin_high:-3,color_opaque:-2 }},
+    { id:'cab_franc', name:'Cabernet Franc', regions:'Loire (Chinon) · St-Emilion',
+      clues:{ color_light_ruby:2,color_ruby:1,
+        nose_red_fruit:2,nose_kirsche:2,nose_paprika:2,nose_veilchen:2,
+        palate_tannin_med:2,palate_acid_high:2,palate_body_light:2,
+        color_opaque:-2,palate_tannin_high:-1 }},
   ],
-
   weiss: [
-    {
-      id: 'chardonnay',
-      name: 'Chardonnay',
-      regions: 'Burgund · Chablis · Champagne · Napa',
-      clues: {
-        w_color_straw: 2, w_color_gold: 2,
-        w_nose_apfel: 2, w_nose_butter: 3, w_nose_toast: 3,
-        w_nose_vanille: 2, w_nose_mineral: 1,
-        w_palate_acid_med: 2, w_palate_body_full: 2,
-        w_palate_bsf: 2,
-        w_nose_thiol: -3, w_nose_petrol: -2, w_nose_litschi: -3,
-      }
-    },
-    {
-      id: 'sauv_blanc',
-      name: 'Sauvignon Blanc',
-      regions: 'Sancerre · Pouilly-Fumé · Marlborough',
-      clues: {
-        w_color_pale: 2, w_color_green: 3,
-        w_nose_thiol: 3, w_nose_stachelbeere: 3, w_nose_gras: 3,
-        w_nose_grapefruit: 2, w_nose_zitrus: 2,
-        w_palate_acid_high: 2, w_palate_body_light: 2,
-        w_nose_butter: -3, w_nose_petrol: -2, w_nose_litschi: -3,
-      }
-    },
-    {
-      id: 'riesling',
-      name: 'Riesling',
-      regions: 'Mosel · Alsace · Pfalz · Clare Valley',
-      clues: {
-        w_color_pale: 2, w_color_green: 1,
-        w_nose_apfel: 2, w_nose_pfirsich: 2,
-        w_nose_petrol: 3, w_nose_blumen: 1,
-        w_nose_zitrus: 2, w_nose_mineral: 2,
-        w_palate_acid_high: 3, w_palate_body_light: 2,
-        w_palate_restsüsse: 1,
-        w_nose_butter: -3, w_nose_thiol: -2,
-      }
-    },
-    {
-      id: 'gruener_veltliner',
-      name: 'Grüner Veltliner',
-      regions: 'Weinviertel · Wachau · Kamptal',
-      clues: {
-        w_color_pale: 2, w_color_green: 2,
-        w_nose_pfeffer: 3, w_nose_kraeuter: 3,
-        w_nose_zitrus: 2, w_nose_mineral: 1,
-        w_palate_acid_high: 2, w_palate_body_med: 2,
-        w_nose_butter: -2, w_nose_litschi: -3, w_nose_petrol: -1,
-      }
-    },
-    {
-      id: 'viognier',
-      name: 'Viognier',
-      regions: 'Condrieu · Languedoc · Südfrankreich',
-      clues: {
-        w_color_gold: 3,
-        w_nose_nektarine: 3, w_nose_aprikose: 3,
-        w_nose_blumen: 3, w_nose_veilchen: 2,
-        w_palate_acid_low: 3, w_palate_body_full: 3,
-        w_nose_thiol: -3, w_nose_petrol: -2, w_nose_pfeffer: -2,
-      }
-    },
-    {
-      id: 'pinot_gris',
-      name: 'Pinot Grigio / Gris',
-      regions: 'Alsace · Norditalien · Neuseeland',
-      clues: {
-        w_color_straw: 2, w_color_gold: 1,
-        w_nose_apfel: 2, w_nose_birne: 3, w_nose_mandarine: 2,
-        w_nose_honig: 1, w_nose_rauch: 1,
-        w_palate_acid_med: 2, w_palate_body_med: 2,
-        w_nose_thiol: -2, w_nose_petrol: -1,
-      }
-    },
-    {
-      id: 'gewuerztraminer',
-      name: 'Gewürztraminer',
-      regions: 'Alsace · Alto Adige · Deutschland',
-      clues: {
-        w_color_gold: 2,
-        w_nose_litschi: 3, w_nose_rosen: 3, w_nose_gewuerze: 3,
-        w_nose_blumen: 2,
-        w_palate_acid_low: 2, w_palate_body_full: 2,
-        w_palate_restsüsse: 1,
-        w_nose_thiol: -3, w_nose_pfeffer: -2, w_nose_mineral: -1,
-      }
-    },
-    {
-      id: 'verdejo',
-      name: 'Verdejo',
-      regions: 'Rueda · Kastilien-León',
-      clues: {
-        w_color_pale: 2, w_color_green: 1,
-        w_nose_grapefruit: 2, w_nose_fenchel: 2,
-        w_nose_zitrus: 2, w_nose_kraeuter: 1, w_nose_mandeln: 2,
-        w_palate_acid_high: 1, w_palate_body_med: 1,
-        w_nose_butter: -2, w_nose_petrol: -2,
-      }
-    },
-    {
-      id: 'albarino',
-      name: 'Albariño',
-      regions: 'Rías Baixas · Vinho Verde (Alvarinho)',
-      clues: {
-        w_color_straw: 2,
-        w_nose_pfirsich: 2, w_nose_aprikose: 1,
-        w_nose_zitrus: 2, w_nose_mineral: 2,
-        w_palate_acid_high: 2, w_palate_salzig: 3,
-        w_palate_body_med: 1,
-        w_nose_butter: -2, w_nose_litschi: -2,
-      }
-    },
-    {
-      id: 'vermentino',
-      name: 'Vermentino',
-      regions: 'Sardinien · Ligurien · Korsika',
-      clues: {
-        w_color_straw: 2,
-        w_nose_zitrus: 2, w_nose_pfirsich: 1, w_nose_kraeuter: 2,
-        w_nose_mandeln: 2, w_nose_mineral: 1,
-        w_palate_salzig: 2, w_palate_acid_med: 1,
-        w_palate_body_med: 1,
-        w_nose_butter: -2, w_nose_petrol: -2,
-      }
-    },
-    {
-      id: 'chasselas',
-      name: 'Chasselas / Gutedel',
-      regions: 'Waadt · Wallis (Fendant) · Genf',
-      clues: {
-        w_color_pale: 3,
-        w_nose_apfel: 2, w_nose_birne: 2, w_nose_blumen: 1,
-        w_nose_mineral: 2,
-        w_palate_acid_low: 1, w_palate_body_light: 3,
-        w_palate_prickel: 1,
-        w_nose_butter: -2, w_nose_thiol: -2, w_nose_petrol: -2,
-        w_nose_litschi: -3,
-      }
-    },
+    { id:'chardonnay', name:'Chardonnay', regions:'Burgund · Chablis · Napa',
+      clues:{ w_color_straw:2,w_color_gold:2,
+        w_nose_apfel:2,w_nose_butter:3,w_nose_toast:3,w_nose_vanille:2,w_nose_mineral:1,
+        w_palate_acid_med:2,w_palate_body_full:2,w_palate_bsf:2,
+        w_nose_thiol:-3,w_nose_petrol:-2,w_nose_litschi:-3 }},
+    { id:'sauv_blanc', name:'Sauvignon Blanc', regions:'Sancerre · Marlborough · Pouilly-Fumé',
+      clues:{ w_color_pale:2,w_color_green:3,
+        w_nose_thiol:3,w_nose_stachelbeere:3,w_nose_gras:3,w_nose_grapefruit:2,w_nose_zitrus:2,
+        w_palate_acid_high:2,w_palate_body_light:2,
+        w_nose_butter:-3,w_nose_petrol:-2,w_nose_litschi:-3 }},
+    { id:'riesling', name:'Riesling', regions:'Mosel · Alsace · Pfalz · Clare Valley',
+      clues:{ w_color_pale:2,w_color_green:1,
+        w_nose_apfel:2,w_nose_pfirsich:2,w_nose_petrol:3,w_nose_blumen:1,w_nose_zitrus:2,w_nose_mineral:2,
+        w_palate_acid_high:3,w_palate_body_light:2,w_palate_restsüsse:1,
+        w_nose_butter:-3,w_nose_thiol:-2 }},
+    { id:'gruener_veltliner', name:'Grüner Veltliner', regions:'Weinviertel · Wachau · Kamptal',
+      clues:{ w_color_pale:2,w_color_green:2,
+        w_nose_pfeffer:3,w_nose_kraeuter:3,w_nose_zitrus:2,w_nose_mineral:1,
+        w_palate_acid_high:2,w_palate_body_med:2,
+        w_nose_butter:-2,w_nose_litschi:-3,w_nose_petrol:-1 }},
+    { id:'viognier', name:'Viognier', regions:'Condrieu · Languedoc',
+      clues:{ w_color_gold:3,
+        w_nose_nektarine:3,w_nose_aprikose:3,w_nose_blumen:3,w_nose_veilchen:2,
+        w_palate_acid_low:3,w_palate_body_full:3,
+        w_nose_thiol:-3,w_nose_petrol:-2,w_nose_pfeffer:-2 }},
+    { id:'pinot_gris', name:'Pinot Grigio / Gris', regions:'Alsace · Norditalien · Neuseeland',
+      clues:{ w_color_straw:2,w_color_gold:1,
+        w_nose_apfel:2,w_nose_birne:3,w_nose_mandarine:2,w_nose_honig:1,w_nose_rauch:1,
+        w_palate_acid_med:2,w_palate_body_med:2,
+        w_nose_thiol:-2,w_nose_petrol:-1 }},
+    { id:'gewuerztraminer', name:'Gewürztraminer', regions:'Alsace · Alto Adige',
+      clues:{ w_color_gold:2,
+        w_nose_litschi:3,w_nose_rosen:3,w_nose_gewuerze:3,w_nose_blumen:2,
+        w_palate_acid_low:2,w_palate_body_full:2,w_palate_restsüsse:1,
+        w_nose_thiol:-3,w_nose_pfeffer:-2,w_nose_mineral:-1 }},
+    { id:'verdejo', name:'Verdejo', regions:'Rueda · Kastilien-León',
+      clues:{ w_color_pale:2,w_color_green:1,
+        w_nose_grapefruit:2,w_nose_fenchel:2,w_nose_zitrus:2,w_nose_kraeuter:1,w_nose_mandeln:2,
+        w_palate_acid_high:1,w_palate_body_med:1,
+        w_nose_butter:-2,w_nose_petrol:-2 }},
+    { id:'albarino', name:'Albariño', regions:'Rías Baixas · Vinho Verde',
+      clues:{ w_color_straw:2,
+        w_nose_pfirsich:2,w_nose_aprikose:1,w_nose_zitrus:2,w_nose_mineral:2,
+        w_palate_acid_high:2,w_palate_salzig:3,w_palate_body_med:1,
+        w_nose_butter:-2,w_nose_litschi:-2 }},
+    { id:'vermentino', name:'Vermentino', regions:'Sardinien · Ligurien · Korsika',
+      clues:{ w_color_straw:2,
+        w_nose_zitrus:2,w_nose_pfirsich:1,w_nose_kraeuter:2,w_nose_mandeln:2,w_nose_mineral:1,
+        w_palate_salzig:2,w_palate_acid_med:1,w_palate_body_med:1,
+        w_nose_butter:-2,w_nose_petrol:-2 }},
+    { id:'chasselas', name:'Chasselas / Fendant', regions:'Waadt · Wallis · Genf',
+      clues:{ w_color_pale:3,
+        w_nose_apfel:2,w_nose_birne:2,w_nose_blumen:1,w_nose_mineral:2,
+        w_palate_acid_low:1,w_palate_body_light:3,w_palate_prickel:1,
+        w_nose_butter:-2,w_nose_thiol:-2,w_nose_petrol:-2,w_nose_litschi:-3 }},
   ],
-
   rose: [
-    {
-      id: 'grenache_rose',
-      name: 'Grenache (Rosé)',
-      regions: 'Provence · Languedoc · Navarra',
-      clues: {
-        r_color_pale: 3, r_color_lachs: 2,
-        r_nose_erdbeere: 3, r_nose_wassermelone: 3,
-        r_nose_blumen: 2, r_nose_kraeuter: 2,
-        r_palate_trocken: 3, r_palate_acid_med: 2,
-        r_palate_body_light: 2,
-        r_color_dunkel: -2, r_palate_süss: -2,
-      }
-    },
-    {
-      id: 'pinot_rose',
-      name: 'Pinot Noir (Rosé)',
-      regions: 'Burgund · Alsace · Loire · Champagne',
-      clues: {
-        r_color_pale: 2, r_color_kupfer: 3,
-        r_nose_erdbeere: 2, r_nose_himbeere: 2,
-        r_nose_mineral: 2,
-        r_palate_trocken: 3, r_palate_acid_high: 2,
-        r_palate_body_light: 2,
-        r_color_dunkel: -2, r_palate_süss: -3,
-      }
-    },
-    {
-      id: 'sangiovese_rose',
-      name: 'Sangiovese (Rosé)',
-      regions: 'Cerasuolo d\'Abruzzo · Chiaretto',
-      clues: {
-        r_color_lachs: 2, r_color_himbeere: 1,
-        r_nose_sauerkirsche: 3, r_nose_zitrus: 2,
-        r_nose_kraeuter: 2,
-        r_palate_trocken: 2, r_palate_acid_high: 3,
-        r_palate_body_med: 1,
-        r_palate_süss: -2,
-      }
-    },
-    {
-      id: 'tempranillo_rose',
-      name: 'Tempranillo (Rosado)',
-      regions: 'Rioja Rosado · Navarra',
-      clues: {
-        r_color_lachs: 2, r_color_himbeere: 1,
-        r_nose_erdbeere: 2, r_nose_himbeere: 2,
-        r_nose_blumen: 1,
-        r_palate_trocken: 2, r_palate_acid_med: 2,
-        r_palate_body_med: 1,
-      }
-    },
-    {
-      id: 'syrah_rose',
-      name: 'Syrah / Mourvèdre (Rosé)',
-      regions: 'Bandol · Tavel · Languedoc',
-      clues: {
-        r_color_lachs: 2, r_color_himbeere: 2,
-        r_nose_himbeere: 2, r_nose_pepper: 2,
-        r_nose_kraeuter: 3, r_nose_mineral: 2,
-        r_palate_trocken: 2, r_palate_acid_med: 2,
-        r_palate_body_med: 2, r_palate_salzig: 2,
-        r_palate_süss: -2,
-      }
-    },
-    {
-      id: 'malbec_rose',
-      name: 'Malbec (Rosé)',
-      regions: 'Mendoza · Patagonien',
-      clues: {
-        r_color_dunkel: 2, r_color_himbeere: 2,
-        r_nose_brombeere: 2, r_nose_himbeere: 1,
-        r_nose_veilchen: 2,
-        r_palate_body_med: 2, r_palate_body_full: 1,
-        r_color_pale: -2,
-      }
-    },
+    { id:'grenache_rose', name:'Grenache (Rosé)', regions:'Provence · Languedoc · Navarra',
+      clues:{ r_color_pale:3,r_color_lachs:2,
+        r_nose_erdbeere:3,r_nose_wassermelone:3,r_nose_blumen:2,r_nose_kraeuter:2,
+        r_palate_trocken:3,r_palate_acid_med:2,r_palate_body_light:2,
+        r_color_dunkel:-2,r_palate_süss:-2 }},
+    { id:'pinot_rose', name:'Pinot Noir (Rosé)', regions:'Burgund · Alsace · Loire',
+      clues:{ r_color_pale:2,r_color_kupfer:3,
+        r_nose_erdbeere:2,r_nose_himbeere:2,r_nose_mineral:2,
+        r_palate_trocken:3,r_palate_acid_high:2,r_palate_body_light:2,
+        r_color_dunkel:-2,r_palate_süss:-3 }},
+    { id:'sangiovese_rose', name:'Sangiovese (Rosé)', regions:'Cerasuolo · Chiaretto',
+      clues:{ r_color_lachs:2,r_color_himbeere:1,
+        r_nose_sauerkirsche:3,r_nose_zitrus:2,r_nose_kraeuter:2,
+        r_palate_trocken:2,r_palate_acid_high:3,r_palate_body_med:1,
+        r_palate_süss:-2 }},
+    { id:'tempranillo_rose', name:'Tempranillo (Rosado)', regions:'Rioja Rosado · Navarra',
+      clues:{ r_color_lachs:2,r_color_himbeere:1,
+        r_nose_erdbeere:2,r_nose_himbeere:2,r_nose_blumen:1,
+        r_palate_trocken:2,r_palate_acid_med:2,r_palate_body_med:1 }},
+    { id:'syrah_rose', name:'Syrah / Mourvèdre (Rosé)', regions:'Bandol · Tavel · Languedoc',
+      clues:{ r_color_lachs:2,r_color_himbeere:2,
+        r_nose_himbeere:2,r_nose_pepper:2,r_nose_kraeuter:3,r_nose_mineral:2,
+        r_palate_trocken:2,r_palate_acid_med:2,r_palate_body_med:2,r_palate_salzig:2,
+        r_palate_süss:-2 }},
+    { id:'malbec_rose', name:'Malbec (Rosé)', regions:'Mendoza · Patagonien',
+      clues:{ r_color_dunkel:2,r_color_himbeere:2,
+        r_nose_brombeere:2,r_nose_himbeere:1,r_nose_veilchen:2,
+        r_palate_body_med:2,r_palate_body_full:1,
+        r_color_pale:-2 }},
   ]
 };
 
-// ══════════════════════════════════════════════════════
-// CLUE DEFINITIONS
-// ══════════════════════════════════════════════════════
-
-const CLUE_SECTIONS = {
+const STEPS = {
   rot: [
-    {
-      id: 'farbe', title: 'Farbe & Optik', subtitle: 'Auge · Farbton · Transparenz · Rand · Viskosität',
-      type: 'color',
-      clues: [
-        { id: 'color_violet', label: 'Purpur / Violett', swatch: '#6B1540', hint: 'Jung, hohe Dichte' },
-        { id: 'color_dark', label: 'Dunkelrot / Schwarzkirsche', swatch: '#5C0E18', hint: 'Kräftige Sorte' },
-        { id: 'color_granat', label: 'Granat / Dunkelrubin', swatch: '#8B1A1A', hint: 'Reif oder warm' },
-        { id: 'color_ruby', label: 'Rubinrot / Kirschrot', swatch: '#A8192B', hint: 'Klassisch' },
-        { id: 'color_light_ruby', label: 'Hellrubinrot / Zarttransparent', swatch: '#CC4466', hint: 'Leichte Sorte' },
-        { id: 'color_transparent', label: 'Durchsichtig (Zeitung lesbar)', swatch: '#E8809A', hint: 'Pinot-Verdacht!' },
-        { id: 'color_opaque', label: 'Opak / undurchdringlich', swatch: '#3A0A12', hint: 'Dichte Traube' },
-        { id: 'rim_purple', label: 'Rand: violett/purpur', swatch: '#7A1060', hint: 'Sehr jung' },
-        { id: 'rim_jung', label: 'Rand: gleichmässig rubinrot', swatch: '#B02040', hint: 'Jung (0–3 J.)' },
-        { id: 'rim_orange', label: 'Rand: orange / ziegelrot', swatch: '#B05828', hint: 'Gereift (5+ J.)' },
-        { id: 'visk_thick', label: 'Dicke Kirchenfenster / Tränen', swatch: '#7A1030', hint: 'Hoher Alkohol' },
-        { id: 'visk_thin', label: 'Dünnflüssig, feine Tränen', swatch: '#D06080', hint: 'Leichte Sorte' },
-      ]
-    },
-    {
-      id: 'nase_frucht', title: 'Nase – Frucht', subtitle: 'Welche Früchte dominieren?',
-      type: 'chip',
-      clues: [
-        { id: 'nose_kirsche', label: '🍒 Kirsche' },
-        { id: 'nose_sauerkirsche', label: '🍒 Sauerkirsche' },
-        { id: 'nose_erdbeere', label: '🍓 Erdbeere' },
-        { id: 'nose_red_fruit', label: '🍓 Rote Beeren allg.' },
-        { id: 'nose_cassis', label: '🫐 Cassis / Schwarze Johannisbeere' },
-        { id: 'nose_brombeere', label: '🫐 Brombeere' },
-        { id: 'nose_pflaume', label: '🟣 Pflaume / Dunkelbeeren' },
-        { id: 'nose_dark_fruit', label: '🟣 Dunkle Früchte allg.' },
-        { id: 'nose_feige', label: '🍂 Feige / Rosine / Trockenfrüchte' },
-        { id: 'nose_blumen', label: '🌸 Blumige Note' },
-        { id: 'nose_rosen', label: '🌹 Roten Rosen' },
-      ]
-    },
-    {
-      id: 'nase_char', title: 'Nase – Würze & Charakter', subtitle: 'Kräuter · Gewürze · Holz · Erde',
-      type: 'chip',
-      clues: [
-        { id: 'nose_paprika', label: '🫑 Grüne Paprika / Pyrazine' },
-        { id: 'nose_pepper', label: '🌶 Schwarzer Pfeffer' },
-        { id: 'nose_pepper_white', label: '⚪ Weisser Pfeffer' },
-        { id: 'nose_garrigue', label: '🌿 Garrigue / Kräuter (Thymian, Rosmarin)' },
-        { id: 'nose_lakritz', label: '🖤 Lakritz / Eukalyptus' },
-        { id: 'nose_eukalyptus', label: '🌿 Eukalyptus / Menthol' },
-        { id: 'nose_teer', label: '🛢 Teer / Tinte (Nebbiolo-Leitaroma!)' },
-        { id: 'nose_balsamico', label: '💧 Balsamico / Essigton (Sangiovese)' },
-        { id: 'nose_erde', label: '🌍 Erde / Unterholz / Pilze' },
-        { id: 'nose_pilze', label: '🍄 Pilze / Trüffel' },
-        { id: 'nose_veilchen', label: '💜 Veilchen / Iris' },
-        { id: 'nose_gewuerze', label: '🫙 Gewürze (Zimt, Nelken)' },
-        { id: 'nose_zeder', label: '🪵 Zeder / Bleistift (Bordeaux)' },
-        { id: 'nose_tabak', label: '🚬 Tabak / Zigarre' },
-        { id: 'nose_leder', label: '🤎 Leder (Tertiäraroma)' },
-        { id: 'nose_schoko', label: '🍫 Schokolade / Espresso' },
-        { id: 'nose_vanille', label: '🍦 Vanille / Röstaroma' },
-      ]
-    },
-    {
-      id: 'gaumen', title: 'Gaumen', subtitle: 'Tannin · Säure · Körper · Alkohol',
-      type: 'chip',
-      clues: [
-        { id: 'palate_tannin_high', label: '💪 Tannin: fest / adstringierend' },
-        { id: 'palate_tannin_med', label: '🤝 Tannin: mittel' },
-        { id: 'palate_tannin_silk', label: '🧈 Tannin: seidig / samtig' },
-        { id: 'palate_tannin_none', label: '🪶 Tannin: fast keines' },
-        { id: 'palate_acid_high', label: '⚡ Säure: hoch / spitz' },
-        { id: 'palate_acid_med', label: '💧 Säure: mittel' },
-        { id: 'palate_acid_low', label: '🌊 Säure: niedrig / weich' },
-        { id: 'palate_body_light', label: '🫧 Körper: leicht / elegant' },
-        { id: 'palate_body_med', label: '⚖️ Körper: mittel' },
-        { id: 'palate_body_full', label: '🏋️ Körper: vollmundig / opulent' },
-        { id: 'palate_alc_high', label: '🔥 Alkohol: spürbar hoch (14.5%+)' },
-        { id: 'palate_restsüsse', label: '🍬 Leichte Restsüsse im Abgang' },
-      ]
-    },
+    { id:'farbe', title:'Farbe & Optik', hint:'Was siehst du im Glas?', type:'color', clues:[
+      { id:'color_violet',      label:'Purpur / Violett',              swatch:'#5C0E22', hint:'Jung, sehr dicht' },
+      { id:'color_dark',        label:'Dunkelrot / Schwarzkirsche',    swatch:'#6B1020', hint:'Kräftige Sorte' },
+      { id:'color_granat',      label:'Granatrot',                     swatch:'#8B1A1A', hint:'Reif oder warm' },
+      { id:'color_ruby',        label:'Rubinrot / Kirschrot',          swatch:'#A8192B', hint:'Klassisch' },
+      { id:'color_light_ruby',  label:'Hellrubinrot',                  swatch:'#CC4466', hint:'Leichte Sorte' },
+      { id:'color_transparent', label:'Durchsichtig (Zeitung lesbar)', swatch:'#E8809A', hint:'Pinot-Verdacht!' },
+      { id:'color_opaque',      label:'Opak / undurchdringlich',       swatch:'#3A0A12', hint:'Sehr dichte Traube' },
+      { id:'rim_purple',        label:'Rand: violett / purpur',        swatch:'#7A1060', hint:'Sehr jung (0–2 J.)' },
+      { id:'rim_jung',          label:'Rand: gleichmässig rubinrot',   swatch:'#B02040', hint:'Jung (2–5 J.)' },
+      { id:'rim_orange',        label:'Rand: orange / ziegelrot',      swatch:'#B05828', hint:'Gereift (6+ J.)' },
+      { id:'visk_thick',        label:'Dicke Tränen / Kirchenfenster', swatch:'#7A1030', hint:'Hoher Alkohol' },
+      { id:'visk_thin',         label:'Feine, dünne Tränen',           swatch:'#D06080', hint:'Leichte Sorte' },
+    ]},
+    { id:'nase_frucht', title:'Nase – Frucht', hint:'Welche Früchte dominieren?', type:'chip', clues:[
+      { id:'nose_kirsche',      label:'🍒 Kirsche' },
+      { id:'nose_sauerkirsche', label:'🍒 Sauerkirsche' },
+      { id:'nose_erdbeere',     label:'🍓 Erdbeere' },
+      { id:'nose_red_fruit',    label:'🍓 Rote Beeren allgemein' },
+      { id:'nose_cassis',       label:'🫐 Cassis / schwarze Johannisbeere' },
+      { id:'nose_brombeere',    label:'🫐 Brombeere' },
+      { id:'nose_pflaume',      label:'🟣 Pflaume' },
+      { id:'nose_dark_fruit',   label:'🟣 Dunkle Früchte allgemein' },
+      { id:'nose_feige',        label:'🍂 Feige / Rosine / Trockenfrüchte' },
+      { id:'nose_blumen',       label:'🌸 Blumige Note' },
+      { id:'nose_rosen',        label:'🌹 Rote Rosen' },
+    ]},
+    { id:'nase_char', title:'Nase – Würze & Charakter', hint:'Kräuter, Gewürze, Holz, Erde…', type:'chip', clues:[
+      { id:'nose_paprika',      label:'🫑 Grüne Paprika (Pyrazine)' },
+      { id:'nose_pepper',       label:'🌶 Schwarzer Pfeffer' },
+      { id:'nose_pepper_white', label:'⚪ Weisser Pfeffer' },
+      { id:'nose_garrigue',     label:'🌿 Garrigue (Thymian, Rosmarin)' },
+      { id:'nose_lakritz',      label:'🖤 Lakritz' },
+      { id:'nose_eukalyptus',   label:'🌿 Eukalyptus / Menthol' },
+      { id:'nose_teer',         label:'🛢 Teer / Tinte' },
+      { id:'nose_balsamico',    label:'💧 Balsamico-Ton' },
+      { id:'nose_erde',         label:'🌍 Erde / Unterholz' },
+      { id:'nose_pilze',        label:'🍄 Pilze / Trüffel' },
+      { id:'nose_veilchen',     label:'💜 Veilchen / Iris' },
+      { id:'nose_gewuerze',     label:'🫙 Gewürze (Zimt, Nelken)' },
+      { id:'nose_zeder',        label:'🪵 Zeder / Bleistift' },
+      { id:'nose_tabak',        label:'🚬 Tabak / Zigarre' },
+      { id:'nose_leder',        label:'🤎 Leder' },
+      { id:'nose_schoko',       label:'🍫 Schokolade / Espresso' },
+      { id:'nose_vanille',      label:'🍦 Vanille / Röstaromen' },
+    ]},
+    { id:'gaumen', title:'Gaumen', hint:'Tannin, Säure, Körper, Alkohol', type:'chip', clues:[
+      { id:'palate_tannin_high', label:'💪 Tannin: fest / adstringierend' },
+      { id:'palate_tannin_med',  label:'🤝 Tannin: mittel' },
+      { id:'palate_tannin_silk', label:'🧈 Tannin: seidig / samtig' },
+      { id:'palate_tannin_none', label:'🪶 Tannin: kaum vorhanden' },
+      { id:'palate_acid_high',   label:'⚡ Säure: hoch / spitz' },
+      { id:'palate_acid_med',    label:'💧 Säure: mittel' },
+      { id:'palate_acid_low',    label:'🌊 Säure: niedrig / weich' },
+      { id:'palate_body_light',  label:'🫧 Körper: leicht / elegant' },
+      { id:'palate_body_med',    label:'⚖️ Körper: mittel' },
+      { id:'palate_body_full',   label:'🏋️ Körper: vollmundig / opulent' },
+      { id:'palate_alc_high',    label:'🔥 Alkohol spürbar hoch (14.5%+)' },
+      { id:'palate_restsüsse',   label:'🍬 Leichte Restsüsse im Abgang' },
+    ]},
   ],
-
   weiss: [
-    {
-      id: 'w_farbe', title: 'Farbe & Optik', subtitle: 'Farbton · Grün- oder Goldreflexe',
-      type: 'color',
-      clues: [
-        { id: 'w_color_pale', label: 'Blass / fast wasserweiss', swatch: '#F5F0E0', hint: 'Kein Holz, jung' },
-        { id: 'w_color_green', label: 'Grünliche Reflexe', swatch: '#D8EAA0', hint: 'Jung, kein Holz' },
-        { id: 'w_color_straw', label: 'Strohgelb / Hellgelb', swatch: '#F0E060', hint: 'Standard' },
-        { id: 'w_color_gold', label: 'Goldgelb / Tiefgold', swatch: '#D4A020', hint: 'Holz oder Alter' },
-        { id: 'w_color_amber', label: 'Bernstein / Orange', swatch: '#C08010', hint: 'Oxidiert / Süss' },
-      ]
-    },
-    {
-      id: 'w_nase_frucht', title: 'Nase – Frucht & Aromen', subtitle: 'Typische Leitaromen',
-      type: 'chip',
-      clues: [
-        { id: 'w_nose_apfel', label: '🍏 Grüner Apfel / Birne frisch' },
-        { id: 'w_nose_birne', label: '🍐 Birne / reif' },
-        { id: 'w_nose_pfirsich', label: '🍑 Pfirsich / Nektarine' },
-        { id: 'w_nose_aprikose', label: '🟠 Aprikose' },
-        { id: 'w_nose_nektarine', label: '🍑 Nektarine (sehr üppig)' },
-        { id: 'w_nose_zitrus', label: '🍋 Zitrus / Limette / Grapefruit' },
-        { id: 'w_nose_grapefruit', label: '🍊 Grapefruit' },
-        { id: 'w_nose_mandarine', label: '🍊 Mandarine / Zitrusschale' },
-        { id: 'w_nose_stachelbeere', label: '🍇 Stachelbeere (Thiol-Signal!)' },
-        { id: 'w_nose_mandeln', label: '🌰 Bittermandel / Marzipan' },
-        { id: 'w_nose_honig', label: '🍯 Honig / reif-süss' },
-        { id: 'w_nose_litschi', label: '🔴 Litschi / Rosenwasser (Gewürztraminer!)' },
-        { id: 'w_nose_rosen', label: '🌹 Rosen / Blütenduft intensiv' },
-      ]
-    },
-    {
-      id: 'w_nase_char', title: 'Nase – Würze & Charakter', subtitle: 'Kräuter · Holz · Mineralität · Besondere Noten',
-      type: 'chip',
-      clues: [
-        { id: 'w_nose_thiol', label: '🐱 «Katzenpisse» / Gras / Stachelbeere (Thiol!)' },
-        { id: 'w_nose_petrol', label: '⛽ Petroleum / Kerosin (Riesling-Signal!)' },
-        { id: 'w_nose_butter', label: '🧈 Butter / Creme / Brioche (BSF)' },
-        { id: 'w_nose_toast', label: '🍞 Toast / Röstaroma (Holz)' },
-        { id: 'w_nose_vanille', label: '🍦 Vanille / Holzwürze' },
-        { id: 'w_nose_mineral', label: '🪨 Mineral / Kreide / Kieselstein' },
-        { id: 'w_nose_pfeffer', label: '⚪ Weisser Pfeffer / Kräuterwürze' },
-        { id: 'w_nose_kraeuter', label: '🌿 Kräuter / Zitronengras / Dill' },
-        { id: 'w_nose_fenchel', label: '🌿 Fenchel / Anis' },
-        { id: 'w_nose_blumen', label: '🌸 Blumig / florale Note' },
-        { id: 'w_nose_gewuerze', label: '🫙 Gewürze / Nelke / Ingwer' },
-        { id: 'w_nose_rauch', label: '💨 Rauch / Feuerstein' },
-        { id: 'w_nose_veilchen', label: '💜 Veilchen / Geissblatt' },
-      ]
-    },
-    {
-      id: 'w_gaumen', title: 'Gaumen', subtitle: 'Säure · Körper · Besonderheiten',
-      type: 'chip',
-      clues: [
-        { id: 'w_palate_acid_high', label: '⚡ Säure: sehr hoch / schrill' },
-        { id: 'w_palate_acid_med', label: '💧 Säure: mittel / frisch' },
-        { id: 'w_palate_acid_low', label: '🌊 Säure: niedrig / cremig' },
-        { id: 'w_palate_body_light', label: '🫧 Körper: leicht' },
-        { id: 'w_palate_body_med', label: '⚖️ Körper: mittel' },
-        { id: 'w_palate_body_full', label: '🏋️ Körper: vollmundig / fast ölig' },
-        { id: 'w_palate_bsf', label: '🥛 Cremig / BSF-Textur (kein Säurebiss)' },
-        { id: 'w_palate_restsüsse', label: '🍬 Spürbare Restsüsse' },
-        { id: 'w_palate_salzig', label: '🌊 Salziger / mineralischer Abgang' },
-        { id: 'w_palate_prickel', label: '✨ Leichtes Prickeln / Kohlensäure' },
-      ]
-    },
+    { id:'w_farbe', title:'Farbe & Optik', hint:'Farbton genau beobachten', type:'color', clues:[
+      { id:'w_color_pale',  label:'Blass / fast farblos',    swatch:'#F5F2E5', hint:'Kein Holz, sehr jung' },
+      { id:'w_color_green', label:'Grünlich-gelb',            swatch:'#D0E890', hint:'Jung, kühles Klima' },
+      { id:'w_color_straw', label:'Strohgelb / Hellgelb',     swatch:'#EDD858', hint:'Standard' },
+      { id:'w_color_gold',  label:'Goldgelb / Tiefgold',      swatch:'#D4A020', hint:'Holz oder Alter' },
+      { id:'w_color_amber', label:'Bernstein / Orange',       swatch:'#C08010', hint:'Oxidiert / Süsswein' },
+    ]},
+    { id:'w_nase_frucht', title:'Nase – Frucht & Blüten', hint:'Welche Früchte dominieren?', type:'chip', clues:[
+      { id:'w_nose_apfel',        label:'🍏 Grüner Apfel / frische Birne' },
+      { id:'w_nose_birne',        label:'🍐 Reife Birne' },
+      { id:'w_nose_pfirsich',     label:'🍑 Pfirsich' },
+      { id:'w_nose_aprikose',     label:'🟠 Aprikose' },
+      { id:'w_nose_nektarine',    label:'🍑 Nektarine (üppig)' },
+      { id:'w_nose_zitrus',       label:'🍋 Zitrus / Limette / Grapefruit' },
+      { id:'w_nose_grapefruit',   label:'🍊 Grapefruit' },
+      { id:'w_nose_mandarine',    label:'🍊 Mandarine' },
+      { id:'w_nose_stachelbeere', label:'🍇 Stachelbeere' },
+      { id:'w_nose_mandeln',      label:'🌰 Bittermandel / Marzipan' },
+      { id:'w_nose_honig',        label:'🍯 Honig / reif-süss' },
+      { id:'w_nose_litschi',      label:'🔴 Litschi (Gewürztraminer!)' },
+      { id:'w_nose_rosen',        label:'🌹 Rosen / intensiv floral' },
+      { id:'w_nose_blumen',       label:'🌸 Florale Note allgemein' },
+    ]},
+    { id:'w_nase_char', title:'Nase – Würze & Charakter', hint:'Besondere Aromen, Holz, Mineralität', type:'chip', clues:[
+      { id:'w_nose_thiol',    label:'🐱 «Katzenpisse» / Gras (Thiol!)' },
+      { id:'w_nose_petrol',   label:'⛽ Petroleum / Kerosin (Riesling!)' },
+      { id:'w_nose_butter',   label:'🧈 Butter / Creme / Brioche' },
+      { id:'w_nose_toast',    label:'🍞 Toast / Röstaromen (Holz)' },
+      { id:'w_nose_vanille',  label:'🍦 Vanille' },
+      { id:'w_nose_mineral',  label:'🪨 Mineralisch / Kreide / Kieselstein' },
+      { id:'w_nose_pfeffer',  label:'⚪ Weisser Pfeffer' },
+      { id:'w_nose_kraeuter', label:'🌿 Kräuter / Zitronengras' },
+      { id:'w_nose_fenchel',  label:'🌿 Fenchel / Anis' },
+      { id:'w_nose_gewuerze', label:'🫙 Gewürze / Ingwer / Nelke' },
+      { id:'w_nose_rauch',    label:'💨 Rauch / Feuerstein' },
+      { id:'w_nose_gras',     label:'🌱 Frischgeschnittenes Gras' },
+      { id:'w_nose_veilchen', label:'💜 Veilchen / Geissblatt' },
+    ]},
+    { id:'w_gaumen', title:'Gaumen', hint:'Säure, Körper, besondere Eigenschaften', type:'chip', clues:[
+      { id:'w_palate_acid_high',  label:'⚡ Säure: sehr hoch / lebendig' },
+      { id:'w_palate_acid_med',   label:'💧 Säure: mittel / frisch' },
+      { id:'w_palate_acid_low',   label:'🌊 Säure: niedrig / cremig' },
+      { id:'w_palate_body_light', label:'🫧 Körper: leicht' },
+      { id:'w_palate_body_med',   label:'⚖️ Körper: mittel' },
+      { id:'w_palate_body_full',  label:'🏋️ Körper: vollmundig / ölig' },
+      { id:'w_palate_bsf',        label:'🥛 Cremig-buttrige Textur (BSF)' },
+      { id:'w_palate_restsüsse',  label:'🍬 Spürbare Restsüsse' },
+      { id:'w_palate_salzig',     label:'🌊 Salziger / mineralischer Abgang' },
+      { id:'w_palate_prickel',    label:'✨ Leichtes Prickeln' },
+    ]},
   ],
-
   rose: [
-    {
-      id: 'r_farbe', title: 'Farbe – das wichtigste Signal', subtitle: 'Farbton genau beobachten',
-      type: 'color',
-      clues: [
-        { id: 'r_color_pale', label: 'Zartrosa / Zwiebelhaut', swatch: '#FADADD', hint: 'Provence-Stil' },
-        { id: 'r_color_lachs', label: 'Lachsrosa / Pfirsichrosa', swatch: '#F09090', hint: 'Standard Alt-Welt' },
-        { id: 'r_color_kupfer', label: 'Rosa mit Kupferreflex', swatch: '#E8A080', hint: 'Pinot Noir Rosé' },
-        { id: 'r_color_himbeere', label: 'Himbeerrosa / Intensiv', swatch: '#D04060', hint: 'Kräftige Sorte' },
-        { id: 'r_color_dunkel', label: 'Dunkelrosa / Beinahe Rot', swatch: '#A02040', hint: 'Dunkle Trauben' },
-      ]
-    },
-    {
-      id: 'r_nase', title: 'Nase & Gaumen', subtitle: 'Frucht · Stil · Charakter',
-      type: 'chip',
-      clues: [
-        { id: 'r_nose_erdbeere', label: '🍓 Erdbeere / Wassermelone' },
-        { id: 'r_nose_himbeere', label: '🍇 Himbeere / rote Beeren kräftig' },
-        { id: 'r_nose_sauerkirsche', label: '🍒 Sauerkirsche / Zitrus' },
-        { id: 'r_nose_brombeere', label: '🫐 Brombeere / dunkle Früchte' },
-        { id: 'r_nose_blumen', label: '🌸 Blumig / zart florale Note' },
-        { id: 'r_nose_kraeuter', label: '🌿 Kräuter / Garrigue' },
-        { id: 'r_nose_mineral', label: '🪨 Mineralisch / salzig' },
-        { id: 'r_nose_veilchen', label: '💜 Veilchen / dunkle Blüten' },
-        { id: 'r_nose_pepper', label: '🌶 Würzig / Pfeffer' },
-        { id: 'r_nose_zitrus', label: '🍋 Zitrus / frische Säure' },
-        { id: 'r_palate_trocken', label: '🏜 Gaumen: komplett trocken' },
-        { id: 'r_palate_süss', label: '🍬 Gaumen: merklich süss' },
-        { id: 'r_palate_acid_high', label: '⚡ Säure: hoch / lebendig' },
-        { id: 'r_palate_acid_med', label: '💧 Säure: mittel / ausgewogen' },
-        { id: 'r_palate_body_light', label: '🫧 Körper: leicht' },
-        { id: 'r_palate_body_med', label: '⚖️ Körper: mittel' },
-        { id: 'r_palate_body_full', label: '🏋️ Körper: kräftig' },
-        { id: 'r_palate_salzig', label: '🌊 Mineralisch-salziger Abgang' },
-      ]
-    },
+    { id:'r_farbe', title:'Farbe – das wichtigste Signal', hint:'Farbton möglichst genau bestimmen', type:'color', clues:[
+      { id:'r_color_pale',     label:'Zartrosa / Zwiebelhaut',    swatch:'#FADADD', hint:'Provence-Stil' },
+      { id:'r_color_lachs',    label:'Lachsrosa / Pfirsichrosa',  swatch:'#F09090', hint:'Standard Alt-Welt' },
+      { id:'r_color_kupfer',   label:'Rosa mit Kupferreflex',     swatch:'#E8A080', hint:'Pinot Noir Rosé' },
+      { id:'r_color_himbeere', label:'Himbeerrosa / Intensiv',    swatch:'#D04060', hint:'Kräftige Sorte' },
+      { id:'r_color_dunkel',   label:'Dunkelrosa / fast Rot',     swatch:'#A02040', hint:'Dunkle Trauben' },
+    ]},
+    { id:'r_nase', title:'Nase', hint:'Fruchtprofil und Charakter', type:'chip', clues:[
+      { id:'r_nose_erdbeere',     label:'🍓 Erdbeere / Wassermelone' },
+      { id:'r_nose_himbeere',     label:'🍇 Himbeere / rote Beeren kräftig' },
+      { id:'r_nose_sauerkirsche', label:'🍒 Sauerkirsche / Zitruston' },
+      { id:'r_nose_brombeere',    label:'🫐 Brombeere / dunkle Früchte' },
+      { id:'r_nose_wassermelone', label:'🍉 Wassermelone / frisch' },
+      { id:'r_nose_blumen',       label:'🌸 Blumig / florale Note' },
+      { id:'r_nose_kraeuter',     label:'🌿 Kräuter / Garrigue' },
+      { id:'r_nose_mineral',      label:'🪨 Mineralisch / salzig' },
+      { id:'r_nose_veilchen',     label:'💜 Veilchen / dunkle Blüten' },
+      { id:'r_nose_pepper',       label:'🌶 Würzig / Pfeffer' },
+      { id:'r_nose_zitrus',       label:'🍋 Zitrus / frische Note' },
+    ]},
+    { id:'r_gaumen', title:'Gaumen', hint:'Trocken oder süss? Körper und Säure?', type:'chip', clues:[
+      { id:'r_palate_trocken',    label:'🏜 Komplett trocken' },
+      { id:'r_palate_süss',       label:'🍬 Merklich süss' },
+      { id:'r_palate_acid_high',  label:'⚡ Säure: hoch / lebendig' },
+      { id:'r_palate_acid_med',   label:'💧 Säure: mittel / ausgewogen' },
+      { id:'r_palate_body_light', label:'🫧 Körper: leicht' },
+      { id:'r_palate_body_med',   label:'⚖️ Körper: mittel' },
+      { id:'r_palate_body_full',  label:'🏋️ Körper: kräftig' },
+      { id:'r_palate_salzig',     label:'🌊 Mineralisch-salziger Abgang' },
+    ]},
   ]
 };
 
-// ══════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════
+// ═══════════════════ STATE ═══════════════════
 let currentType = 'rot';
-let selectedClues = new Set();
+let currentStep = 0;
+let selectedClues = {};
 
-// ══════════════════════════════════════════════════════
-// SCORING
-// ══════════════════════════════════════════════════════
+function getSteps() { return STEPS[currentType]; }
+function getWines() { return WINES[currentType]; }
+
+function initState() {
+  selectedClues = {};
+  getSteps().forEach(s => { selectedClues[s.id] = new Set(); });
+}
+
+// ═══════════════════ SCORING ═══════════════════
+function getAllSelected() {
+  const all = new Set();
+  Object.values(selectedClues).forEach(s => s.forEach(id => all.add(id)));
+  return all;
+}
+
 function scoreWines() {
-  const wines = WINES[currentType];
-  const scored = wines.map(wine => {
+  const all = getAllSelected();
+  return getWines().map(wine => {
     let score = 0;
-    let maxPossible = 0;
-    let hitCount = 0;
-    selectedClues.forEach(clueId => {
-      const val = wine.clues[clueId] ?? 0;
-      score += val;
-      if (val > 0) hitCount++;
-    });
-    // Max possible if all selected clues matched perfectly
-    selectedClues.forEach(clueId => {
-      const val = wine.clues[clueId] ?? 0;
-      if (val > 0) maxPossible += val;
-    });
-    return { ...wine, score, hitCount };
-  });
-  return scored.sort((a, b) => b.score - a.score);
+    all.forEach(id => { score += wine.clues[id] ?? 0; });
+    return { ...wine, score };
+  }).sort((a, b) => b.score - a.score);
 }
 
-function classifyWine(wine, scored) {
-  if (selectedClues.size === 0) return 'neutral';
-  if (wine.score < 0) return 'excluded';
-  if (wine.score === scored[0].score && wine.score > 0) return 'top-match';
-  if (wine.score > 0) return 'included';
-  return 'neutral';
+// ═══════════════════ RENDER ═══════════════════
+function render() {
+  renderStepNav();
+  renderLiveBar();
+  renderMain();
 }
 
-// ══════════════════════════════════════════════════════
-// RENDER
-// ══════════════════════════════════════════════════════
-function renderSteps() {
-  const panel = document.getElementById('steps-panel');
-  const sections = CLUE_SECTIONS[currentType];
-  panel.innerHTML = '';
+function renderLiveBar() {
+  const bar = document.getElementById('live-bar');
+  const cands = document.getElementById('live-bar-candidates');
+  const total = getAllSelected().size;
 
-  sections.forEach((section, si) => {
-    const div = document.createElement('div');
-    div.className = 'step-section' + (si === 0 ? ' open' : '');
-    div.id = 'sec-' + section.id;
+  // Hide on results page (it's redundant there)
+  if (currentStep === 'results') { bar.style.display = 'none'; return; }
 
-    const selectedInSection = [...selectedClues].filter(id =>
-      section.clues.some(c => c.id === id)
-    ).length;
+  bar.style.display = 'flex';
 
-    div.innerHTML = `
-      <div class="step-header" onclick="toggleSection('sec-${section.id}')">
-        <span class="step-num">${si + 1}</span>
-        <div style="flex:1">
-          <div class="step-title">${section.title}</div>
-          <div class="step-subtitle">${section.subtitle}</div>
-        </div>
-        <span class="step-selected-count ${selectedInSection > 0 ? 'visible' : ''}" id="cnt-${section.id}">
-          ${selectedInSection} gewählt
-        </span>
-        <span class="step-chevron">▼</span>
-      </div>
-      <div class="step-body">
-        ${section.type === 'color' ? renderColorChips(section.clues) : renderChips(section.clues)}
-      </div>
-    `;
-    panel.appendChild(div);
-  });
-}
-
-function renderColorChips(clues) {
-  return `<div class="color-chips">` + clues.map(c => `
-    <div class="color-chip ${selectedClues.has(c.id) ? 'selected' : ''}"
-         id="chip-${c.id}"
-         onclick="toggleClue('${c.id}')">
-      <div class="swatch-circle" style="background:${c.swatch}"></div>
-      <div>
-        <div class="color-chip-label">${c.label}</div>
-        <div style="font-size:0.6rem;color:var(--text-muted);font-family:'DM Mono',monospace;">${c.hint}</div>
-      </div>
-    </div>
-  `).join('') + `</div>`;
-}
-
-function renderChips(clues) {
-  return `<div class="clue-chips">` + clues.map(c => `
-    <div class="chip ${selectedClues.has(c.id) ? 'selected' : ''}"
-         id="chip-${c.id}"
-         onclick="toggleClue('${c.id}')">
-      ${c.label}
-    </div>
-  `).join('') + `</div>`;
-}
-
-function renderCandidates() {
-  const scored = scoreWines();
-  const listEl = document.getElementById('candidates-list');
-  const countEl = document.getElementById('candidate-count');
-  const hypoBox = document.getElementById('hypothesis-box');
-  const hypoEmpty = document.getElementById('hypothesis-empty');
-  const hypoTop = document.getElementById('hypothesis-top');
-  const selectedPanel = document.getElementById('selected-clues-panel');
-  const selectedTags = document.getElementById('selected-clues-tags');
-
-  if (selectedClues.size === 0) {
-    listEl.innerHTML = `<div class="no-selection-hint">Tippe auf Merkmale links,<br>um die Kandidaten einzugrenzen.</div>`;
-    countEl.textContent = '— / —';
-    hypoBox.classList.remove('active');
-    hypoEmpty.style.display = 'block';
-    hypoTop.style.display = 'none';
-    selectedPanel.style.display = 'none';
+  if (total === 0) {
+    cands.innerHTML = `<span class="live-bar-empty">Noch keine Merkmale gewählt</span>`;
     return;
   }
 
-  const included = scored.filter(w => w.score > 0);
-  const total = scored.length;
-  countEl.textContent = `${included.length} / ${total}`;
-  countEl.className = 'candidate-count' + (included.length <= 3 ? ' urgent' : '');
+  const scored = scoreWines();
+  const top3 = scored.filter(w => w.score > 0).slice(0, 3);
+  const medals = ['🥇','🥈','🥉'];
 
-  // Find max score for bar scaling
+  if (top3.length === 0) {
+    cands.innerHTML = `<span class="live-bar-empty">Keine Treffer – Merkmale prüfen</span>`;
+    return;
+  }
+
+  cands.innerHTML = top3.map((w, i) =>
+    `<div class="live-pill rank-${i+1}">
+      <span class="live-pill-medal">${medals[i]}</span>
+      <span class="live-pill-name">${w.name}</span>
+      <span class="live-pill-score">+${w.score}</span>
+    </div>`
+  ).join('');
+}
+
+function renderStepNav() {
+  const steps = getSteps();
+  document.getElementById('step-nav').innerHTML =
+    steps.map((s, i) => {
+      const cnt = selectedClues[s.id] ? selectedClues[s.id].size : 0;
+      const done = currentStep === 'results' || i < currentStep;
+      const active = currentStep === i;
+      const cls = active ? 'active' : done ? 'completed' : '';
+      return `<div class="step-nav-item ${cls}" onclick="goToStep(${i})">
+        <span class="step-nav-num">${done ? '✓' : i+1}</span>
+        ${s.title}${cnt > 0 ? ` (${cnt})` : ''}
+      </div>`;
+    }).join('') +
+    `<div class="step-nav-item ${currentStep==='results'?'active':''}" onclick="goToStep('results')">
+      <span class="step-nav-num">★</span>Ergebnis
+    </div>`;
+}
+
+function renderMain() {
+  if (currentStep === 'results') {
+    document.getElementById('main-content').innerHTML = buildResults();
+  } else {
+    document.getElementById('main-content').innerHTML = buildStep();
+  }
+}
+
+function buildStep() {
+  const steps = getSteps();
+  const step = steps[currentStep];
+  const sel = selectedClues[step.id] || new Set();
+  const isLast = currentStep === steps.length - 1;
+
+  const cluesHTML = step.type === 'color'
+    ? `<div class="color-chips">` + step.clues.map(c =>
+        `<div class="color-chip ${sel.has(c.id)?'selected':''}" onclick="toggleClue('${c.id}')">
+          <div class="swatch-circle" style="background:${c.swatch}"></div>
+          <div class="color-chip-text">
+            <div class="color-chip-label">${c.label}</div>
+            <div class="color-chip-hint">${c.hint}</div>
+          </div>
+          <div class="chip-check">✓</div>
+        </div>`).join('') + `</div>`
+    : `<div class="clue-chips">` + step.clues.map(c =>
+        `<div class="chip ${sel.has(c.id)?'selected':''}" onclick="toggleClue('${c.id}')">
+          ${c.label}
+        </div>`).join('') + `</div>`;
+
+  return `
+    <div class="step-label">Schritt ${currentStep+1} von ${steps.length}</div>
+    <div class="step-title">${step.title}</div>
+    <div class="step-hint">${step.hint}</div>
+    ${cluesHTML}
+    <div class="step-footer">
+      ${currentStep > 0 ? `<button class="btn-back" onclick="prevStep()">← Zurück</button>` : ''}
+      <button class="btn-next ${isLast?'gold':''}" onclick="${isLast ? "goToStep('results')" : 'nextStep()'}">
+        ${isLast ? '★ Ergebnis anzeigen' : 'Weiter →'}
+      </button>
+    </div>`;
+}
+
+function buildResults() {
+  const scored = scoreWines();
+  const steps = getSteps();
+  const top3 = scored.filter(w => w.score > 0).slice(0, 3);
   const maxScore = Math.max(...scored.map(w => Math.max(0, w.score)), 1);
+  const medals = ['🥇','🥈','🥉'];
+  const total = getAllSelected().size;
 
-  listEl.innerHTML = scored.map(wine => {
-    const cls = classifyWine(wine, scored);
-    const pct = cls === 'excluded' ? 0 : Math.max(0, (wine.score / maxScore) * 100);
-    let icon = cls === 'top-match' ? '★' : cls === 'included' ? `+${wine.score}` : cls === 'excluded' ? '✗' : '–';
-    return `
-      <div class="candidate-item ${cls}">
-        <div class="candidate-score-bar">${icon}</div>
-        <div class="candidate-info" style="flex:1">
-          <div class="candidate-name">${wine.name}</div>
-          <div class="candidate-regions">${wine.regions}</div>
-          <div class="score-track">
+  // Hypothesis
+  const hypoHTML = top3.length === 0
+    ? `<div class="empty-results">Keine Übereinstimmungen.<br>Tippe auf einen Schritt oben, um Merkmale zu ändern.</div>`
+    : `<div class="hypothesis-card">
+        <div class="hypo-label">Meine Hypothese</div>` +
+        top3.map((w,i) => `
+          <div class="hypo-entry">
+            <span class="hypo-rank ${i===0?'first':''}">${i+1}.</span>
+            <span class="hypo-medal">${medals[i]}</span>
+            <span class="hypo-grape ${i===0?'first':''}">${w.name}</span>
+            <span class="hypo-score">+${w.score}</span>
+          </div>
+          <div class="score-row"><div class="score-fill" style="width:${Math.round(w.score/maxScore*100)}%"></div></div>
+        `).join('') +
+      `</div>`;
+
+  // All candidates
+  const candHTML = `<div class="candidates-section">
+    <div class="section-label">Alle Kandidaten</div>` +
+    scored.map(w => {
+      const pct = Math.max(0, Math.round(w.score/maxScore*100));
+      const cls = w.score < 0 ? 'excluded' : w.score === scored[0].score && w.score > 0 ? 'top' : w.score > 0 ? 'included' : '';
+      const icon = cls==='top' ? '★' : cls==='included' ? '✓' : cls==='excluded' ? '✗' : '–';
+      return `<div class="candidate-row ${cls}">
+        <span class="cand-icon">${icon}</span>
+        <div style="flex:1">
+          <div class="cand-name">${w.name}</div>
+          <div class="cand-region">${w.regions}</div>
+          <div class="score-row" style="margin-top:0.2rem">
             <div class="score-fill" style="width:${pct}%"></div>
           </div>
         </div>
-      </div>
-    `;
-  }).join('');
+        <span class="cand-score">${w.score>0?'+':''}${w.score}</span>
+      </div>`;
+    }).join('') + `</div>`;
 
-  // Hypothesis
-  const top3 = scored.filter(w => w.score > 0).slice(0, 3);
-  if (top3.length > 0) {
-    hypoBox.classList.add('active');
-    hypoEmpty.style.display = 'none';
-    hypoTop.style.display = 'flex';
-    const ranks = ['1.', '2.', '3.'];
-    hypoTop.innerHTML = top3.map((w, i) => `
-      <div class="hypothesis-entry">
-        <span class="hypothesis-rank ${i === 0 ? 'first' : ''}">${ranks[i]}</span>
-        <span class="hypothesis-grape ${i === 0 ? 'first' : ''}">${w.name}</span>
-        <span class="hypothesis-hint">+${w.score} Pkt.</span>
-      </div>
-    `).join('');
+  // Selected clues summary
+  const anySelected = Object.values(selectedClues).some(s => s.size > 0);
+  let summaryBody = '';
+  if (anySelected) {
+    steps.forEach(step => {
+      const sel = selectedClues[step.id];
+      if (!sel || sel.size === 0) return;
+      const tags = [...sel].map(id => {
+        const clue = step.clues.find(c => c.id === id);
+        const label = clue ? clue.label : id;
+        return `<span class="summary-tag" onclick="removeClue('${id}','${step.id}')">
+          ${label} <span class="remove-x">✕</span>
+        </span>`;
+      }).join('');
+      summaryBody += `<div class="summary-section">
+        <div class="summary-section-name">${step.title}</div>
+        <div class="summary-tags">${tags}</div>
+      </div>`;
+    });
   } else {
-    hypoBox.classList.remove('active');
-    hypoEmpty.style.display = 'block';
-    hypoEmpty.textContent = 'Keine passenden Kandidaten.';
-    hypoTop.style.display = 'none';
+    summaryBody = `<div class="summary-empty">Noch keine Merkmale gewählt.</div>`;
   }
 
-  // Selected clues tags
-  selectedPanel.style.display = 'block';
-  // Get labels
-  const allClues = CLUE_SECTIONS[currentType].flatMap(s => s.clues);
-  selectedTags.innerHTML = [...selectedClues].map(id => {
-    const clue = allClues.find(c => c.id === id);
-    const label = clue ? clue.label : id;
-    // Shorten label to first word/phrase up to ~20 chars
-    const short = label.replace(/^[🍒🍓🫐🟣🌸🌹🫑🌶⚪🌿🖤🛢💧🌍🍄💜🫙🪵🚬🤎🍫🍦⛽🧈🍞🍯🔴🌹🍑🍏🍐🍊🍋🌰💨🐱]+\s*/u, '').split(/[/\s(]/)[0];
-    return `<span class="selected-clue-tag" onclick="toggleClue('${id}')">
-      ${short} <span class="remove">✕</span>
-    </span>`;
-  }).join('');
+  return `
+    <div class="results-title">Ergebnis</div>
+    <div class="results-sub">Basierend auf ${total} gewählten Merkmal${total===1?'':'en'}</div>
+    ${hypoHTML}
+    ${candHTML}
+    <div class="selected-summary">
+      <div class="section-label">Gewählte Merkmale <span style="font-size:0.65rem;opacity:0.6">(tippen zum Entfernen)</span></div>
+      ${summaryBody}
+    </div>
+    <div class="step-footer">
+      <button class="btn-back" onclick="prevStep()">← Zurück</button>
+      <button class="btn-next" onclick="resetAll()">↺ Neu starten</button>
+    </div>`;
 }
 
-// ══════════════════════════════════════════════════════
-// INTERACTIONS
-// ══════════════════════════════════════════════════════
+// ═══════════════════ INTERACTIONS ═══════════════════
+function toggleClue(id) {
+  if (typeof currentStep !== 'number') return;
+  const step = getSteps()[currentStep];
+  if (!step) return;
+  const s = selectedClues[step.id];
+  s.has(id) ? s.delete(id) : s.add(id);
+  renderMain();
+  renderStepNav();
+  renderLiveBar();
+}
+
+function removeClue(clueId, stepId) {
+  if (selectedClues[stepId]) selectedClues[stepId].delete(clueId);
+  renderMain();
+  renderStepNav();
+  renderLiveBar();
+}
+
+function nextStep() {
+  const steps = getSteps();
+  if (typeof currentStep === 'number' && currentStep < steps.length - 1) {
+    currentStep++;
+    render();
+    window.scrollTo(0,0);
+  }
+}
+
+function prevStep() {
+  if (currentStep === 'results') currentStep = getSteps().length - 1;
+  else if (currentStep > 0) currentStep--;
+  render();
+  window.scrollTo(0,0);
+}
+
+function goToStep(n) {
+  currentStep = n;
+  render();
+  window.scrollTo(0,0);
+}
+
 function setWineType(type) {
   currentType = type;
-  selectedClues.clear();
-
-  document.querySelectorAll('.type-tab').forEach(t => {
-    t.classList.remove('active-rot', 'active-weiss', 'active-rose');
-  });
-  document.getElementById('tab-' + type).classList.add('active-' + type);
-
-  renderSteps();
-  renderCandidates();
-}
-
-function toggleClue(id) {
-  if (selectedClues.has(id)) {
-    selectedClues.delete(id);
-  } else {
-    selectedClues.add(id);
-  }
-  // Update chip appearance
-  const el = document.getElementById('chip-' + id);
-  if (el) el.classList.toggle('selected', selectedClues.has(id));
-
-  // Update section counters
-  CLUE_SECTIONS[currentType].forEach(section => {
-    const cnt = document.getElementById('cnt-' + section.id);
-    if (!cnt) return;
-    const n = [...selectedClues].filter(sid => section.clues.some(c => c.id === sid)).length;
-    cnt.textContent = n + ' gewählt';
-    cnt.classList.toggle('visible', n > 0);
-  });
-
-  renderCandidates();
-}
-
-function toggleSection(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.toggle('open');
+  currentStep = 0;
+  document.querySelectorAll('.type-tab').forEach(t =>
+    t.classList.remove('active-rot','active-weiss','active-rose'));
+  document.getElementById('tab-'+type).classList.add('active-'+type);
+  initState();
+  render();
+  window.scrollTo(0,0);
 }
 
 function resetAll() {
-  selectedClues.clear();
-  renderSteps();
-  renderCandidates();
+  currentStep = 0;
+  initState();
+  render();
+  window.scrollTo(0,0);
 }
 
-// ══════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════
-renderSteps();
-renderCandidates();
+// ═══════════════════ INIT ═══════════════════
+initState();
+render();
 </script>
 </body>
 </html>
